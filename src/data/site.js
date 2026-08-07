@@ -425,6 +425,116 @@ export const projects = [
     ],
   },
   {
+    slug: 'yacht-scraper',
+    title: 'Yacht Scraper — Charter Fleet Extraction',
+    category: 'Selenium / FastAPI / React',
+    tags: ['Web Scraping', 'FastAPI', 'Selenium'],
+    year: '2026',
+    // TODO: confirm these two — the repo only shows commits on 28 Jul 2026, so
+    // the duration is a guess and the client is inferred from the gig artwork.
+    client: 'Freelance Engagement',
+    duration: '3 weeks',
+    date: 'Jul 2026',
+    accent: '#e0b877',
+    summary:
+      'A charter fleet scraped into a queryable dataset — run it from a browser, watch it live, export it, and diff one run against the last to see what moved.',
+    overview: [
+      'Two-phase Selenium scrape behind a FastAPI job runner, with a React front end that turns it into something a non-engineer can operate: start a run, watch the log stream, browse what came back and export it. Phase one collects every card on the fleet page; phase two opens each yacht’s detail page for the gallery, specifications, features, accommodation and seasonal rates.',
+      'The interesting part is not the parsing — it is what happens when a run does not finish. A real browser session over 111 yachts at 10–15 seconds each is long enough that cancellations, failed pages and server restarts are normal, so the whole job model is built around resuming rather than starting over.',
+    ],
+    challenge:
+      'A scrape long enough to be interrupted is a scrape that will be interrupted — and re-running the whole fleet to recover a handful of failed pages costs an hour of real browser time.',
+    approach: [
+      {
+        title: 'Every card persisted before navigation',
+        text: 'Phase 1 writes each yacht card to its own table the moment it is parsed, before phase 2 navigates away. That single decision is what makes resume possible: the outstanding work is just the cards with no successful record yet.',
+      },
+      {
+        title: 'Retry and resume as phase-2-only runs',
+        text: 'Retry re-runs the yachts whose detail page failed; resume finishes everything a cancelled or crashed job never reached. Neither revisits the fleet page, so both cost one detail page per yacht and nothing else.',
+      },
+      {
+        title: 'Interrupted jobs reconciled at startup',
+        text: 'A job’s state lives half in the database and half in the process. Any row still marked running after a restart is lying, so startup marks those interrupted — a terminal status you can resume from, rather than a ghost that blocks every future run.',
+      },
+      {
+        title: 'Run-over-run diffing',
+        text: 'Two jobs compared per yacht across the fields worth alerting on — rates, availability calendar, agent contacts, specs — with signed deltas on the numbers. Image URLs are deliberately excluded: the source rewrites them on every deploy and would drown every real change.',
+      },
+      {
+        title: 'Live progress over SSE',
+        text: 'Each job writes to the database as it goes and pushes to an in-memory ring buffer that feeds a cursor-based SSE stream, so the browser gets a live log and per-yacht progress without polling the database.',
+      },
+      {
+        title: 'Exports in the shape the next tool wants',
+        text: 'JSON keeps the nesting; CSV, XLSX and NDJSON flatten to one row per yacht with a pipe separator, because yacht features contain commas. An image manifest exports one row per gallery image, ready for wget or an asset pipeline.',
+      },
+    ],
+    results: [
+      { value: '111', label: 'Yachts In The Fleet' },
+      { value: '25', label: 'Fields Per Yacht' },
+      { value: '4,262', label: 'Gallery Images' },
+    ],
+    stack: [
+      'Python',
+      'FastAPI',
+      'Selenium',
+      'BeautifulSoup',
+      'SQLAlchemy',
+      'React',
+      'SQLite / PostgreSQL',
+      'SSE',
+    ],
+
+    media: {
+      // left-aligned: a centred crop cuts the first letter off the headline
+      thumb: {
+        src: '/projects_data/yacht_scrapping/overview.png',
+        width: 1280,
+        height: 769,
+        position: 'left center',
+      },
+
+      video: {
+        src: '/projects_data/yacht_scrapping/walkthrough.mp4',
+        poster: '/projects_data/yacht_scrapping/walkthrough-poster.jpg',
+        width: 1280,
+        height: 1414,
+        length: '1 min',
+        title: 'A run, both ends at once',
+        caption:
+          'The control panel on top and the browser it is driving underneath — progress counters, the live log and each detail page loading in real time as Selenium works through the fleet. No audio.',
+      },
+      shots: [
+        {
+          src: '/projects_data/yacht_scrapping/overview.png',
+          width: 1280,
+          height: 769,
+          span: 'full',
+          title: 'What the scrape produces',
+          caption:
+            '111 yachts, 25 fields each and 4,262 gallery images, available as JSON, CSV, Excel or straight off the API — with the crawler dashboard showing fleet totals, average charter rate and vessel length across the collected set.',
+        },
+        {
+          src: '/projects_data/yacht_scrapping/dashboard.png',
+          width: 1280,
+          height: 769,
+          title: 'Analytics over the result set',
+          caption:
+            'The collected fleet as a dataset rather than a file — capacity by shipyard, weekly rate against overall length, build-decade distribution and booking-calendar telemetry, all computed from the scraped records.',
+        },
+        {
+          src: '/projects_data/yacht_scrapping/before-after.png',
+          width: 1280,
+          height: 769,
+          title: 'Raw source to typed record',
+          caption:
+            'The actual transformation: minified markup with base64 placeholders and an inline __NEXT__ payload on the left, a typed record with normalised numbers, currency and a stable unique key on the right.',
+        },
+      ],
+    },
+  },
+  {
     slug: 'data-migration-pipelines',
     title: 'Data Migration Pipelines',
     category: 'Cross-Database ETL / PySpark',

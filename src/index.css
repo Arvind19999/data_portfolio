@@ -1843,6 +1843,13 @@ ul {
   margin-bottom: 56px;
 }
 
+/* portrait / stacked recordings — see the `tall` check in ProjectVideo.jsx */
+.pv--tall .pv__frame,
+.pv--tall .pv__caption {
+  max-width: 620px;
+  margin-inline: auto;
+}
+
 .pv__frame {
   position: relative;
   border-radius: var(--r-md);

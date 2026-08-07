@@ -66,17 +66,19 @@ A project in `src/data/site.js` can carry an optional `media` block:
 
 ```js
 media: {
-  thumb: { src, width, height },
+  thumb: { src, width, height, position },
   video: { src, poster, width, height, length, title, caption },
   shots: [{ src, width, height, span, title, caption }],
 }
 ```
 
 - `thumb` replaces the generated artwork on the project cards (grid and Home).
-  Cards crop to 16/11, so pick a shot whose subject sits in the middle.
+  Cards crop to 16/11, so pick a shot whose subject sits in the middle — or set
+  `position` (any CSS `object-position`) to steer the crop.
 - With a `video`, the detail page uses it as the hero instead of the generated
   artwork. Nothing of the file downloads until the poster is clicked — the
-  `<video>` element is not mounted before then.
+  `<video>` element is not mounted before then. A portrait or stacked recording
+  is held to 620px wide automatically, otherwise it would swallow the page.
 - `shots` render below the write-up at full container width; `span: 'full'`
   gives a shot the whole row, anything else pairs two across. Clicking one
   opens the lightbox (arrow keys to step, Escape to close).

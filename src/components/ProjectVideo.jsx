@@ -10,8 +10,12 @@ import { Play } from './Icons';
 export default function ProjectVideo({ video, className = '' }) {
   const [playing, setPlaying] = useState(false);
 
+  // A stacked or portrait recording at full container width would be over a
+  // thousand pixels tall and swallow the page, so those get held narrower.
+  const tall = video.height / video.width > 0.8;
+
   return (
-    <figure className={`pv ${className}`.trim()}>
+    <figure className={`pv ${tall ? 'pv--tall' : ''} ${className}`.trim()}>
       <div className="pv__frame" style={{ aspectRatio: `${video.width} / ${video.height}` }}>
         {playing ? (
           <video

@@ -36,6 +36,9 @@ export function ProjectCard({ project }) {
               alt=""
               width={project.media.thumb.width}
               height={project.media.thumb.height}
+              /* `position` steers the crop when centring would cut something
+                 that matters — a headline against the left edge, say. */
+              style={{ objectPosition: project.media.thumb.position }}
               loading="lazy"
             />
           ) : (
