@@ -683,7 +683,9 @@ ul {
 
 .hero__grid {
   display: grid;
-  grid-template-columns: 1.05fr 1fr;
+  /* the figure column takes the larger share so the portrait can run big
+     while the ring still has room to sit outside it */
+  grid-template-columns: 0.95fr 1.15fr;
   gap: 40px;
   align-items: center;
 }
@@ -696,11 +698,14 @@ ul {
   opacity: 0.94;
 }
 
+/* Sized to stay on one line: the figure column takes the larger share of the
+   grid, so the name has to fit the narrower text column. */
 .hero__name {
-  font-size: clamp(3rem, 7.2vw, 6.1rem);
+  font-size: clamp(2.8rem, 5.9vw, 5.5rem);
   margin-bottom: 8px;
   position: relative;
   display: inline-block;
+  white-space: nowrap;
 }
 
 /* Hand-drawn underline stroke beneath the name */
@@ -786,7 +791,7 @@ ul {
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  min-height: 700px;
+  min-height: 760px;
 }
 
 /* Square box the ring is inscribed in. Social links are placed on the same
@@ -799,7 +804,7 @@ ul {
 .hero__orbit,
 .hero__socials {
   position: absolute;
-  width: min(690px, 114%);
+  width: min(820px, 128%);
   aspect-ratio: 1;
   top: 50%;
   left: 50%;
@@ -864,10 +869,10 @@ ul {
 .hero__portrait {
   position: relative;
   z-index: 2;
-  width: min(470px, 92%);
+  width: min(600px, 94%);
   height: auto;
-  -webkit-mask-image: linear-gradient(to bottom, #000 93%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 93%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 94%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 94%, transparent 100%);
 }
 
 .hero__scroll {
@@ -2279,16 +2284,16 @@ ul {
    the hero's right edge so the 3 o'clock link stays fully on screen. */
 @media (min-width: 1101px) and (max-width: 1500px) {
   .hero .container {
-    padding-right: 110px;
+    padding-right: 130px;
   }
 
   .hero__orbit,
   .hero__socials {
-    width: 118%;
+    width: 128%;
   }
 
   .hero__portrait {
-    width: 88%;
+    width: 94%;
   }
 }
 
@@ -2311,18 +2316,18 @@ ul {
   }
 
   .hero__figure {
-    min-height: 520px;
+    min-height: 620px;
     order: -1;
   }
 
   .hero__portrait {
-    width: min(320px, 62%);
+    width: min(400px, 66%);
   }
 
   /* Keep the ring narrow enough that the 3 o'clock link stays on screen. */
   .hero__orbit,
   .hero__socials {
-    width: min(420px, 80%);
+    width: min(530px, 84%);
   }
 
   .orbit-link {
@@ -2479,16 +2484,16 @@ ul {
   }
 
   .hero__figure {
-    min-height: 440px;
+    min-height: 500px;
   }
 
   .hero__portrait {
-    width: min(240px, 54%);
+    width: min(290px, 58%);
   }
 
   .hero__orbit,
   .hero__socials {
-    width: min(310px, 76%);
+    width: min(360px, 78%);
   }
 
   .orbit-link {
