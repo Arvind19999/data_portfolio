@@ -1145,6 +1145,15 @@ ul {
   transform: scale(1.05);
 }
 
+/* screenshots are wider than the 16/11 card, so they crop at the sides */
+.proj__img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
 .proj__overlay {
   position: absolute;
   inset: 0;
@@ -1811,6 +1820,242 @@ ul {
   color: var(--muted-dim);
 }
 
+.pd-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 60px;
+  padding-top: 34px;
+  border-top: 1px solid var(--line);
+}
+
+/* ==========================================================================
+   Project media — walkthrough video + screenshot gallery
+   ========================================================================== */
+
+/* reset the UA figure margin — the modifier below sets the real spacing */
+.pv {
+  margin: 0;
+}
+
+.pd__video {
+  margin-bottom: 56px;
+}
+
+.pv__frame {
+  position: relative;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: #000;
+}
+
+.pv__video,
+.pv__cover img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.pv__cover {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  display: block;
+}
+
+.pv__cover img {
+  transition: transform 0.6s var(--ease);
+}
+
+.pv__cover:hover img {
+  transform: scale(1.02);
+}
+
+/* The screenshots are near-white, so the overlay chrome needs its own shade
+   behind it to stay legible — deepest at the centre, under the play button. */
+.pv__scrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(10, 10, 14, 0.62) 0%,
+    rgba(10, 10, 14, 0.34) 45%,
+    rgba(10, 10, 14, 0.24) 100%
+  );
+  transition: opacity 0.4s var(--ease);
+}
+
+.pv__cover:hover .pv__scrim {
+  opacity: 0.82;
+}
+
+.pv__play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(66px, 7vw, 92px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--bg);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.35);
+  transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+}
+
+.pv__play svg {
+  width: 26px;
+  height: 26px;
+  margin-left: 3px; /* optical centring — the glyph's mass sits left */
+}
+
+.pv__cover:hover .pv__play {
+  transform: translate(-50%, -50%) scale(1.07);
+  box-shadow: 0 0 0 14px rgba(255, 255, 255, 0.12);
+}
+
+.pv__tags {
+  position: absolute;
+  left: 22px;
+  bottom: 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.pv__badge,
+.pv__len {
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border-radius: 100px;
+  backdrop-filter: blur(6px);
+}
+
+.pv__badge {
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--bg);
+}
+
+.pv__len {
+  background: rgba(10, 10, 14, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.pv__caption,
+.pg__caption {
+  margin-top: 16px;
+  font-size: 0.9rem;
+  line-height: 1.85;
+  color: var(--muted);
+  max-width: 74ch;
+}
+
+.pv__caption strong,
+.pg__caption strong {
+  color: #fff;
+  font-weight: 500;
+}
+
+/* the caption reads as one sentence: bold lead-in, then the description */
+.pv__caption strong::after,
+.pg__caption strong::after {
+  content: ' — ';
+  color: var(--muted-dim);
+}
+
+.pd-shots {
+  margin-top: 78px;
+  padding-top: 62px;
+  border-top: 1px solid var(--line);
+}
+
+.pd-shots__lede {
+  color: var(--muted);
+  max-width: 60ch;
+  margin-bottom: 42px;
+}
+
+.pg {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 46px 34px;
+}
+
+.pg__item--full {
+  grid-column: 1 / -1;
+}
+
+.pg__item figure {
+  margin: 0;
+}
+
+.pg__shot {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--bg-alt);
+  cursor: zoom-in;
+  transition: border-color 0.35s var(--ease), transform 0.45s var(--ease);
+}
+
+.pg__shot img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.pg__shot:hover {
+  border-color: rgba(255, 255, 255, 0.28);
+  transform: translateY(-4px);
+}
+
+.pg__zoom {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(10, 10, 14, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #fff;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+}
+
+.pg__shot:hover .pg__zoom,
+.pg__shot:focus-visible .pg__zoom {
+  opacity: 1;
+  transform: none;
+}
+
+/* there is no hover on touch, and at phone widths these shots are far too
+   small to read — so the "tap to enlarge" cue has to be permanent */
+@media (hover: none) {
+  .pg__zoom {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* ==========================================================================
    Contact
    ========================================================================== */
@@ -2171,6 +2416,92 @@ ul {
   color: #000;
 }
 
+/* -- image variant ------------------------------------------------------- */
+
+/* Screenshots have their own aspect ratio, so this variant sizes to the image
+   rather than to a fixed 16/9 box. */
+.lightbox--img {
+  padding: 74px 84px;
+}
+
+.lightbox__figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  max-width: 100%;
+  max-height: 100%;
+  animation: rise 0.4s var(--ease);
+}
+
+.lightbox__figure img {
+  min-height: 0;
+  max-width: 100%;
+  max-height: 76vh;
+  width: auto;
+  height: auto;
+  display: block;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.6);
+}
+
+.lightbox__figure figcaption {
+  font-size: 0.88rem;
+  line-height: 1.8;
+  color: var(--muted);
+  text-align: center;
+  max-width: 82ch;
+}
+
+.lightbox__figure figcaption strong {
+  color: #fff;
+  font-weight: 500;
+}
+
+.lightbox__figure figcaption strong::after {
+  content: ' — ';
+  color: var(--muted-dim);
+}
+
+.lightbox__count {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  color: var(--muted-dim);
+  margin-bottom: 8px;
+}
+
+.lightbox__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(10, 10, 14, 0.5);
+  color: #fff;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.3s var(--ease), color 0.3s var(--ease);
+}
+
+.lightbox__nav:hover {
+  background: #fff;
+  color: #000;
+}
+
+.lightbox__nav--prev {
+  left: 22px;
+}
+
+.lightbox__nav--next {
+  right: 22px;
+}
+
 /* ==========================================================================
    Preloader
    ========================================================================== */
@@ -2376,6 +2707,10 @@ ul {
   .counter:nth-child(-n + 2) {
     border-bottom: 1px solid var(--line);
   }
+
+  .lightbox--img {
+    padding: 74px 24px;
+  }
 }
 
 @media (max-width: 860px) {
@@ -2431,6 +2766,17 @@ ul {
 
   .article__share {
     justify-content: center;
+  }
+
+  /* half-width screenshots would be unreadable here — one per row instead */
+  .pg {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .pd-shots {
+    margin-top: 60px;
+    padding-top: 48px;
   }
 }
 
@@ -2504,5 +2850,36 @@ ul {
   .orbit-link {
     width: 42px;
     height: 42px;
+  }
+
+  .pv__tags {
+    left: 14px;
+    bottom: 14px;
+  }
+
+  /* at the sides these would sit on top of the image, so they drop to the
+     bottom of the screen — still reachable by thumb */
+  .lightbox__nav {
+    top: auto;
+    bottom: 20px;
+    transform: none;
+    width: 46px;
+    height: 46px;
+  }
+
+  .lightbox__nav--prev {
+    left: calc(50% - 56px);
+  }
+
+  .lightbox__nav--next {
+    right: calc(50% - 56px);
+  }
+
+  .lightbox--img {
+    padding: 62px 16px 86px;
+  }
+
+  .lightbox__figure img {
+    max-height: 58vh;
   }
 }

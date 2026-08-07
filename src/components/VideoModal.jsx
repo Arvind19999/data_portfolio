@@ -1,6 +1,11 @@
 import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Close } from './Icons';
 
+/**
+ * Portalled to `body` for the same reason as ImageLightbox — `.hero > .container`
+ * sets `z-index: 1`, so an overlay left inside it renders under the header.
+ */
 export default function VideoModal({ url, onClose }) {
   useEffect(() => {
     document.body.classList.add('no-scroll');
@@ -12,7 +17,7 @@ export default function VideoModal({ url, onClose }) {
     };
   }, [onClose]);
 
-  return (
+  return createPortal(
     <div
       className="lightbox"
       role="dialog"
@@ -32,6 +37,7 @@ export default function VideoModal({ url, onClose }) {
           allowFullScreen
         />
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

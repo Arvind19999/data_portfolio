@@ -306,6 +306,71 @@ export const projects = [
       { value: '3', label: 'Processing Engines' },
     ],
     stack: ['Python', 'PySpark', 'Apache Livy', 'Databricks', 'AWS', 'PostgreSQL', 'Docker'],
+
+    /**
+     * Optional. Any project can carry a `media` block; the detail page swaps its
+     * generated artwork for the video and renders the gallery below the write-up.
+     * `span: 'full'` gives a shot the whole row, otherwise it takes half.
+     */
+    media: {
+      /* Card artwork in the project grid. Cropped to 16/11 there, so pick a
+         shot whose subject sits in the middle. */
+      thumb: { src: '/projects_data/dfai/pipeline.png', width: 1859, height: 963 },
+
+      video: {
+        src: '/projects_data/dfai/walkthrough.mp4',
+        poster: '/projects_data/dfai/walkthrough-poster.jpg',
+        width: 1440,
+        height: 722,
+        length: '5 min',
+        title: 'Building a pipeline end to end',
+        caption:
+          'A full walkthrough of the Marketplace Seller Risk Scoring pipeline — assembling the graph on the canvas, running it on Databricks, watching the execution log, then inspecting results and retention settings. No audio.',
+      },
+      shots: [
+        {
+          src: '/projects_data/dfai/pipeline.png',
+          width: 1859,
+          height: 963,
+          span: 'full',
+          title: 'The pipeline canvas',
+          caption:
+            'A HubSpot revenue-operations pipeline: five API sources fan out through Explode, Join, Derived, Union, Aggregate and Route nodes into five PostgreSQL sinks, each with a profiling step attached. The left rail is the node palette the graph is assembled from.',
+        },
+        {
+          src: '/projects_data/dfai/pipeline2.png',
+          width: 1889,
+          height: 963,
+          title: 'Routing and windowing',
+          caption:
+            'A Route node splitting 15,000 customer-order rows three ways by rule, with the main branch running Aggregate → Derived → Window before landing. Row counts are shown on every edge.',
+        },
+        {
+          src: '/projects_data/dfai/query.png',
+          width: 1648,
+          height: 898,
+          title: 'Query editor',
+          caption:
+            'The built-in editor with schema browsing, saved and recent queries, and an engine switch — the same query can be sent to PostgreSQL directly or to Databricks.',
+        },
+        {
+          src: '/projects_data/dfai/chart.png',
+          width: 1889,
+          height: 760,
+          title: 'Column profiling',
+          caption:
+            'Automatic profiling of every output column — cardinality, null counts, min/mean/max — with a per-column histogram. Here, customer tier across 1,000 records.',
+        },
+        {
+          src: '/projects_data/dfai/chart2.png',
+          width: 1889,
+          height: 760,
+          title: 'Distribution at scale',
+          caption:
+            'The same profiler over a 7,696-row sink, showing market-segment distribution alongside the raw distribution table.',
+        },
+      ],
+    },
   },
   {
     slug: 'text-to-sql-engine',
@@ -414,8 +479,8 @@ export const projects = [
     ],
   },
   {
-    slug: 'yacht-cloud',
-    title: 'Yacht Cloud — Charter Management',
+    slug: 'yachtchartersuite',
+    title: 'YachtCharterSuite — Charter Management',
     category: 'Grails / Elasticsearch / AWS',
     tags: ['Grails', 'Elasticsearch', 'AWS Lambda'],
     year: '2024 – Ongoing',
@@ -426,7 +491,7 @@ export const projects = [
     summary:
       'A charter management platform with full-text yacht search, an AI chatbot, and an async multi-site scraper running on Lambda.',
     overview: [
-      'Yacht Cloud handles the operational side of charter management — yachts, bookings, crew profiles, collaboration, payments with installment support and expense tracking, built on Grails/GORM with Spring Security.',
+      'YachtCharterSuite handles the operational side of charter management — yachts, bookings, crew profiles, collaboration, payments with installment support and expense tracking, built on Grails/GORM with Spring Security.',
       'The data engineering work sat underneath: an Elasticsearch layer powering both full-text search and an AI chatbot that resolves queries about offers, availability and booking status, plus a scraper that keeps listing data current.',
     ],
     challenge:
@@ -464,6 +529,64 @@ export const projects = [
       'PySpark',
       'OpenAI API',
     ],
+
+    media: {
+      thumb: { src: '/projects_data/ycs/browse-fleet.jpg', width: 1852, height: 928 },
+
+      video: {
+        src: '/projects_data/ycs/walkthrough.mp4',
+        poster: '/projects_data/ycs/walkthrough-poster.jpg',
+        width: 1440,
+        height: 722,
+        length: '3 min',
+        title: 'A tour of the platform',
+        caption:
+          'Operator dashboard through the searchable fleet catalogue and into a single yacht — pricing, gallery and brochure — showing how the scraped listings and the operator-managed ones sit in one place. No audio.',
+      },
+      shots: [
+        {
+          src: '/projects_data/ycs/browse-fleet.jpg',
+          width: 1852,
+          height: 928,
+          span: 'full',
+          title: 'Browsing 2,271 yachts',
+          caption:
+            'The Elasticsearch layer from the user\'s side — the scraped catalogue filtered by region, dates, guests, yacht type, length and price, each card expandable into availability, pricing and offers without leaving the results.',
+        },
+        {
+          src: '/projects_data/ycs/dashboard.png',
+          width: 1852,
+          height: 928,
+          title: 'Operator dashboard',
+          caption:
+            'Revenue, occupancy rate and average booking duration against the previous year, the booking schedule with payment state per charter, and the live calendar down the right.',
+        },
+        {
+          src: '/projects_data/ycs/yacht-database.png',
+          width: 1852,
+          height: 928,
+          title: 'Managed vs scraped',
+          caption:
+            'The admin split that makes the catalogue work: 15 operator-managed yachts against 3,336 scraped ones, with a standing warning for the 945 listings still missing a contact — enquiry routing depends on it.',
+        },
+        {
+          src: '/projects_data/ycs/yacht-gallery.jpg',
+          width: 1852,
+          height: 928,
+          title: 'Media management',
+          caption:
+            'S3-backed gallery for one yacht — 33 images auto-sorted into Aerial, Exterior, Interior and Lifestyle, each re-taggable, feeding the public brochure. The progress bar tracks how complete a listing is.',
+        },
+        {
+          src: '/projects_data/ycs/life-on-deck.jpg',
+          width: 1852,
+          height: 900,
+          title: 'Life on Deck',
+          caption:
+            'Shared moments from each charter, organised per yacht and synced into the brochures — the content side that keeps a listing current once the scraper has done its part.',
+        },
+      ],
+    },
   },
   {
     slug: 'blogs-automation-flow',
@@ -507,6 +630,59 @@ export const projects = [
       { value: '3', label: 'Pipeline States' },
     ],
     stack: ['n8n', 'Gmail API', 'OpenAI API', 'REST APIs', 'JSON'],
+
+    media: {
+      thumb: { src: '/projects_data/n8n/blog_overall_view.png', width: 1844, height: 916 },
+
+      video: {
+        src: '/projects_data/n8n/walkthrough.mp4',
+        poster: '/projects_data/n8n/walkthrough-poster.jpg',
+        width: 1440,
+        height: 746,
+        length: '2 min',
+        title: 'One run, start to finish',
+        caption:
+          'The workflow executing live — Gmail trigger through extraction, sanitising and GPT generation to publish and notify — then a look inside the code nodes at the JSON going in and coming out. No audio.',
+      },
+      shots: [
+        {
+          src: '/projects_data/n8n/blog_overall_view.png',
+          width: 1844,
+          height: 916,
+          span: 'full',
+          title: 'The whole flow',
+          caption:
+            'Schedule Trigger → Gmail → label as Processing → Text Extraction → Sanitize → Generate Blog Post → Login → Create Blog → Get Manager and Invitee → notify, with every node routing its Error branch into "Add To Blogs (Error)" so a failed item lands somewhere recoverable instead of vanishing.',
+        },
+        {
+          src: '/projects_data/n8n/javascript_text_extraction.png',
+          width: 1831,
+          height: 903,
+          title: 'Text extraction',
+          caption:
+            'The code node that pulls subject, body and binary attachments off each Gmail message and flattens 50 items into one predictable shape — raw message JSON on the left, the extracted schema on the right.',
+        },
+        {
+          src: '/projects_data/n8n/javascript_to_clean.png',
+          width: 1831,
+          height: 903,
+          title: 'Sanitising the body',
+          caption:
+            'Forwarded mail arrives as HTML with encoded entities, so this step strips tags and decodes them before anything reaches the model. Note the split Success / Error branches on the output.',
+        },
+        {
+          src: '/projects_data/n8n/content_of_email.png',
+          width: 1803,
+          height: 885,
+          /* full width so the third half-shot isn't left alone on a row —
+             and the in/out tables here need the room to be readable */
+          span: 'full',
+          title: 'State tracking by Gmail label',
+          caption:
+            'There is no database behind this — the Gmail labels are the state machine. This node stamps each message as Blogs (Processing) via {{ $json.id }}, and later steps move it to Processed or Error, which is what makes a re-run safe.',
+        },
+      ],
+    },
   },
   {
     slug: 'sql-dialect-conversion',

@@ -56,6 +56,56 @@ responsive down to 390px · `prefers-reduced-motion` support.
 - `public/images/portrait.png` — hero portrait, a transparent-background cut-out
 - `public/images/about.png` — About page image
 - `public/files/Arbind_Sah_Resume.pdf` — served by every "Get Resume" button
+- `public/projects_data/<project>/` — screenshots and walkthrough video per project
+- `assets_src/` — original, uncompressed captures. **Not served**; kept out of
+  `public/` so `npm run build` doesn't ship them.
+
+### Project screenshots and video
+
+A project in `src/data/site.js` can carry an optional `media` block:
+
+```js
+media: {
+  thumb: { src, width, height },
+  video: { src, poster, width, height, length, title, caption },
+  shots: [{ src, width, height, span, title, caption }],
+}
+```
+
+- `thumb` replaces the generated artwork on the project cards (grid and Home).
+  Cards crop to 16/11, so pick a shot whose subject sits in the middle.
+- With a `video`, the detail page uses it as the hero instead of the generated
+  artwork. Nothing of the file downloads until the poster is clicked — the
+  `<video>` element is not mounted before then.
+- `shots` render below the write-up at full container width; `span: 'full'`
+  gives a shot the whole row, anything else pairs two across. Clicking one
+  opens the lightbox (arrow keys to step, Escape to close).
+- Always set `width`/`height` to the file's real pixel size — that is what
+  reserves the space and stops the page jumping as images load.
+
+Prepare a new recording the same way:
+
+```bash
+# web copy — 1440px wide, 30fps, no audio track; typically ~85% smaller
+ffmpeg -i original.mp4 -vf "scale=1440:-2,fps=30" -c:v libx264 -crf 28 \
+  -preset veryfast -pix_fmt yuv420p -movflags +faststart -an walkthrough.mp4
+
+# poster frame
+ffmpeg -ss 70 -i original.mp4 -frames:v 1 -vf scale=1440:-2 -q:v 4 \
+  walkthrough-poster.jpg
+```
+
+Crop screenshots down to their content before adding them — a capture with a
+large empty margin reads as a grey slab on the dark page. **Crop off the
+browser chrome too**: the URL bar and bookmarks bar expose personal links and
+have nothing to do with the work.
+
+```bash
+ffmpeg -i raw.png -vf "crop=1852:928:0:74" screen.png    # drop the top 74px
+```
+
+Save photo-heavy screens as JPEG (`-q:v 3`) and flat UI screens as PNG — the
+same capture can be 4× larger in the wrong format.
 
 Replacing the portrait: use a PNG with a **real alpha channel**. Exports from
 background-remover previews often bake the grey checkerboard into the pixels

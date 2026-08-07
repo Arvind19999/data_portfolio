@@ -80,6 +80,13 @@ export const Play = (p) => (
   </Svg>
 );
 
+/* corner arrows — "open this at full size" on gallery shots */
+export const Expand = (p) => (
+  <Svg size={18} {...p}>
+    <path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5" />
+  </Svg>
+);
+
 export const Plus = (p) => (
   <Svg size={16} {...p}>
     <path d="M12 5v14M5 12h14" />
