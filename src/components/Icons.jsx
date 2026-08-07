@@ -154,6 +154,22 @@ export const Twitter = (p) => (
   </Svg>
 );
 
+export const Facebook = (p) => (
+  <Svg size={17} filled {...p}>
+    <path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.52 1.49-3.91 3.77-3.91 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.78-1.63 1.57v1.89h2.78l-.45 2.91h-2.33V22c4.78-.76 8.44-4.92 8.44-9.94Z" />
+  </Svg>
+);
+
+/* Fiverr — the wordmark's lowercase "fi", simplified so it stays legible at
+   the 18px the other social glyphs render at. */
+export const Fiverr = (p) => (
+  <Svg size={18} filled {...p}>
+    <path d="M11.9 19H9.3v-6.7H6.6v-2.2h2.7V9c0-2.4 1.4-3.8 3.9-3.8h2v2.2h-1.5c-1.1 0-1.7.5-1.7 1.6v1.1h3.2v2.2h-3.3V19Z" />
+    <rect x="16.1" y="10.1" width="2.6" height="8.9" rx="0.4" />
+    <circle cx="17.4" cy="6.4" r="1.5" />
+  </Svg>
+);
+
 /* -- service icons ------------------------------------------------------- */
 
 const svcProps = { ...base, strokeWidth: 1.2 };

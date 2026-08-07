@@ -5,6 +5,9 @@ import { Download, Play } from './Icons';
 import { socialIcon } from './socialIcon';
 import VideoModal from './VideoModal';
 
+/** Where each social link sits on the ring, in degrees (0° = right, up = -). */
+const ORBIT_ANGLES = [-64, -32, 0, 32, 64];
+
 export default function Hero() {
   const [video, setVideo] = useState(false);
 
@@ -52,27 +55,39 @@ export default function Hero() {
           </div>
 
           <div className="hero__figure">
-            <div className="hero__orbit" aria-hidden="true" />
-
-            <div className="hero__portrait-frame">
-              <img
-                className="hero__portrait"
-                src="/images/portrait.png"
-                alt={`${profile.name}, ${profile.role}`}
-                width="1024"
-                height="1536"
-                fetchPriority="high"
-              />
+            {/* The ring and the social links share one circle: each link is
+                placed at `angle` degrees on it, so the drawn line passes
+                exactly through every icon. 0° is due right, negative is up. */}
+            <div className="hero__orbit">
+              <svg className="hero__orbit-line" viewBox="-1 -1 102 102" aria-hidden="true">
+                <circle cx="50" cy="50" r="50" />
+                <circle className="orbit-inner" cx="50" cy="50" r="39" />
+              </svg>
             </div>
 
+            <img
+              className="hero__portrait"
+              src="/images/portrait.png"
+              alt={`${profile.name}, ${profile.role}`}
+              width="1100"
+              height="1657"
+              fetchPriority="high"
+            />
+
             <div className="hero__socials">
-              {socials.map((s) => {
+              {socials.map((s, i) => {
                 const Icon = socialIcon(s.icon);
+                const rad = ((ORBIT_ANGLES[i] ?? 0) * Math.PI) / 180;
+
                 return (
                   <a
                     key={s.name}
                     href={s.url}
                     className="orbit-link"
+                    style={{
+                      left: `${50 + 50 * Math.cos(rad)}%`,
+                      top: `${50 + 50 * Math.sin(rad)}%`,
+                    }}
                     target={s.url.startsWith('http') ? '_blank' : undefined}
                     rel="noreferrer"
                     aria-label={s.name}

@@ -786,45 +786,67 @@ ul {
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  min-height: 620px;
+  min-height: 700px;
 }
 
-.hero__orbit {
+/* Square box the ring is inscribed in. Social links are placed on the same
+   circle by angle (see Hero.jsx), so the drawn line always threads exactly
+   through their centres. */
+/* The ring and the social layer are siblings sharing identical geometry, so a
+   link placed at angle θ lands exactly on the drawn circle. They must stay
+   siblings: the centring `transform` creates a stacking context, so nesting
+   the links inside the ring would trap them behind the portrait. */
+.hero__orbit,
+.hero__socials {
   position: absolute;
-  width: min(540px, 100%);
+  width: min(690px, 114%);
   aspect-ratio: 1;
-  top: 48%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.hero__orbit::after {
-  content: '';
-  position: absolute;
-  inset: 46px;
-  border-radius: 50%;
-  border: 1px dashed rgba(255, 255, 255, 0.055);
+.hero__orbit-line {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  display: block;
+}
+
+.hero__orbit-line circle {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.13);
+  stroke-width: 0.2;
+}
+
+.hero__orbit-line .orbit-inner {
+  stroke: rgba(255, 255, 255, 0.055);
+  stroke-dasharray: 1.1 1.7;
 }
 
 .hero__socials {
-  position: absolute;
-  inset: 0;
   z-index: 3;
+  pointer-events: none;
+}
+
+.hero__socials a {
+  pointer-events: auto;
 }
 
 .orbit-link {
   position: absolute;
-  width: 56px;
-  height: 56px;
+  width: 58px;
+  height: 58px;
+  margin: 0;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.22);
-  background: rgba(34, 34, 43, 0.85);
+  background: rgba(34, 34, 43, 0.92);
   backdrop-filter: blur(6px);
   display: grid;
   place-items: center;
   color: var(--muted);
+  /* left/top come from Hero.jsx as percentages on the ring */
+  transform: translate(-50%, -50%);
   transition: background 0.35s var(--ease), color 0.35s var(--ease),
     border-color 0.35s var(--ease), transform 0.35s var(--ease);
 }
@@ -833,81 +855,19 @@ ul {
   background: #fff;
   color: var(--bg);
   border-color: #fff;
-  transform: scale(1.08);
+  transform: translate(-50%, -50%) scale(1.1);
 }
 
-/* Positioned around the ring, mirroring the reference layout */
-.orbit-link:nth-child(1) {
-  top: 10%;
-  right: 4%;
-}
-.orbit-link:nth-child(2) {
-  top: 33%;
-  right: -4%;
-}
-.orbit-link:nth-child(3) {
-  top: 57%;
-  right: -1%;
-}
-.orbit-link:nth-child(4) {
-  top: 79%;
-  right: 11%;
-}
-
-/* The source photo has a bright office behind the subject and no alpha
-   channel, so a true cut-out isn't possible. Instead the portrait sits in an
-   arch whose lower half dissolves into the page — the figure still reads as
-   bottom-anchored and merged with the background, as in the reference. */
-.hero__portrait-frame {
+/* A true cut-out (transparent PNG), so it needs no framing. Deliberately no
+   drop-shadow: at this size the blur spreads a visible dark cloud across the
+   section instead of reading as a shadow. Just a fade at the bottom edge. */
+.hero__portrait {
   position: relative;
   z-index: 2;
-  width: min(400px, 82%);
-  aspect-ratio: 3 / 4.15;
-  border-radius: 200px 200px 20px 20px;
-  overflow: hidden;
-}
-
-/* Hairline follows the arch only — it stops before the bottom so the figure
-   dissolves into the page instead of ending on a visible edge. */
-.hero__portrait-frame::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  border-radius: inherit;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  pointer-events: none;
-  -webkit-mask-image: linear-gradient(to bottom, #000 42%, transparent 72%);
-  mask-image: linear-gradient(to bottom, #000 42%, transparent 72%);
-}
-
-/* Vignette + bottom dissolve, both keyed to the page background colour. */
-.hero__portrait-frame::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: linear-gradient(
-      to bottom,
-      rgba(38, 38, 47, 0) 30%,
-      rgba(38, 38, 47, 0.55) 60%,
-      rgba(38, 38, 47, 0.92) 84%,
-      var(--bg) 97%
-    ),
-    radial-gradient(
-      ellipse 76% 58% at 50% 32%,
-      rgba(38, 38, 47, 0) 38%,
-      rgba(38, 38, 47, 0.66) 100%
-    );
-}
-
-.hero__portrait {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 14%;
-  filter: saturate(0.82) contrast(1.06) brightness(0.84);
+  width: min(470px, 92%);
+  height: auto;
+  -webkit-mask-image: linear-gradient(to bottom, #000 93%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 93%, transparent 100%);
 }
 
 .hero__scroll {
@@ -2314,6 +2274,24 @@ ul {
    Responsive
    ========================================================================== */
 
+/* Between the mobile breakpoint and a wide desktop the container nearly fills
+   the viewport, leaving no room for the ring to sit outside the portrait. Pad
+   the hero's right edge so the 3 o'clock link stays fully on screen. */
+@media (min-width: 1101px) and (max-width: 1500px) {
+  .hero .container {
+    padding-right: 110px;
+  }
+
+  .hero__orbit,
+  .hero__socials {
+    width: 118%;
+  }
+
+  .hero__portrait {
+    width: 88%;
+  }
+}
+
 @media (max-width: 1100px) {
   .nav {
     display: none;
@@ -2333,12 +2311,23 @@ ul {
   }
 
   .hero__figure {
-    min-height: 500px;
+    min-height: 520px;
     order: -1;
   }
 
-  .hero__portrait-frame {
-    width: min(300px, 68%);
+  .hero__portrait {
+    width: min(320px, 62%);
+  }
+
+  /* Keep the ring narrow enough that the 3 o'clock link stays on screen. */
+  .hero__orbit,
+  .hero__socials {
+    width: min(420px, 80%);
+  }
+
+  .orbit-link {
+    width: 48px;
+    height: 48px;
   }
 
   .hero__squiggle {
@@ -2487,5 +2476,23 @@ ul {
   .to-top {
     right: 18px;
     bottom: 18px;
+  }
+
+  .hero__figure {
+    min-height: 440px;
+  }
+
+  .hero__portrait {
+    width: min(240px, 54%);
+  }
+
+  .hero__orbit,
+  .hero__socials {
+    width: min(310px, 76%);
+  }
+
+  .orbit-link {
+    width: 42px;
+    height: 42px;
   }
 }

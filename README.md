@@ -53,16 +53,31 @@ responsive down to 390px · `prefers-reduced-motion` support.
 
 ## Assets
 
-- `public/images/portrait.png` — hero portrait
+- `public/images/portrait.png` — hero portrait, a transparent-background cut-out
 - `public/images/about.png` — About page image
 - `public/files/Arbind_Sah_Resume.pdf` — served by every "Get Resume" button
 
-Replacing the portrait: the hero frames it in an arch that fades into the page
-background (`.hero__portrait-frame` in `src/index.css`). If you swap in a PNG
-with a transparent background, drop the `::after` gradient and the
-`object-fit`/`filter` rules for a true cut-out.
+Replacing the portrait: use a PNG with a **real alpha channel**. Exports from
+background-remover previews often bake the grey checkerboard into the pixels
+instead — that renders as a visible checkerboard on the page. Size it around
+1100px wide; the hero scales it and adds a drop shadow plus a soft fade at the
+bottom edge (`.hero__portrait` in `src/index.css`).
+
+### The hero social ring
+
+`.hero__orbit` (the drawn circle) and `.hero__socials` (the links) are
+**siblings sharing identical geometry**, and each link is placed at an angle
+from `ORBIT_ANGLES` in `src/components/Hero.jsx` — so the line always threads
+exactly through every icon, however many you have. Add or remove entries in
+`socials` and add a matching angle (0° is due right, negative is upward).
+
+They have to stay siblings: the centring `transform` creates a stacking
+context, so nesting the links inside the ring hides them behind the portrait.
 
 ## Things wired to placeholders
+
+The Facebook and Fiverr entries in `socials` (`src/data/site.js`) point at
+placeholder URLs — replace them with your real profile and gig links.
 
 Three spots have no backend and are marked with comments in the source:
 

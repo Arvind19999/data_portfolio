@@ -1,8 +1,10 @@
-import { FileText, GitHub, Globe, LinkedIn, Mail, Twitter } from './Icons';
+import { Facebook, FileText, Fiverr, GitHub, Globe, LinkedIn, Mail, Twitter } from './Icons';
 
 const MAP = {
   linkedin: LinkedIn,
+  facebook: Facebook,
   github: GitHub,
+  fiverr: Fiverr,
   twitter: Twitter,
   mail: Mail,
   file: FileText,

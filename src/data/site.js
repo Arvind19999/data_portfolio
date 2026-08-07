@@ -28,6 +28,12 @@ export const profile = {
   videoUrl: 'https://www.youtube.com/embed/PhvVNZ0FZZo',
 };
 
+/**
+ * Rendered on the arc beside the hero portrait, and in the footer / drawer.
+ * Order here is the order they sit on the arc, top to bottom.
+ *
+ * TODO: replace the two placeholder URLs below with your real profiles.
+ */
 export const socials = [
   {
     name: 'LinkedIn',
@@ -35,9 +41,12 @@ export const socials = [
     url: 'https://linkedin.com/in/arbind-sah-a929051a8',
     icon: 'linkedin',
   },
+  // placeholder — swap for your Facebook profile
+  { name: 'Facebook', short: 'fb', url: 'https://facebook.com/', icon: 'facebook' },
   { name: 'GitHub', short: 'gh', url: 'https://github.com/Arvind19999', icon: 'github' },
+  // placeholder — swap for your Fiverr gig URL
+  { name: 'Fiverr', short: 'fvr', url: 'https://www.fiverr.com/', icon: 'fiverr' },
   { name: 'Email', short: '@', url: 'mailto:SHa.arvind99@gmail.com', icon: 'mail' },
-  { name: 'Resume', short: 'cv', url: '/files/Arbind_Sah_Resume.pdf', icon: 'file' },
 ];
 
 export const stats = [
