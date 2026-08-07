@@ -677,15 +677,17 @@ ul {
   min-height: 100vh;
   display: flex;
   align-items: center;
-  padding: calc(var(--header-h) + 60px) 0 80px;
+  /* kept tight so the full arc — including the lowest link — clears the fold
+     on a laptop-height viewport */
+  padding: calc(var(--header-h) + 26px) 0 56px;
   overflow: hidden;
 }
 
 .hero__grid {
   display: grid;
-  /* the figure column takes the larger share so the portrait can run big
-     while the ring still has room to sit outside it */
-  grid-template-columns: 0.95fr 1.15fr;
+  /* the figure column takes the larger share: it holds the portrait *and*
+     the reserved band on its right where the arc and social links sit */
+  grid-template-columns: 0.9fr 1.4fr;
   gap: 40px;
   align-items: center;
 }
@@ -786,29 +788,35 @@ ul {
 }
 
 /* Portrait + orbiting social ring ---------------------------------------- */
+/* The portrait sits at the left of this column; the padding on the right is
+   the band the arc and its social links occupy. */
 .hero__figure {
   position: relative;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: flex-end;
   min-height: 760px;
+  padding-right: 125px;
 }
 
 /* Square box the ring is inscribed in. Social links are placed on the same
    circle by angle (see Hero.jsx), so the drawn line always threads exactly
    through their centres. */
-/* The ring and the social layer are siblings sharing identical geometry, so a
-   link placed at angle θ lands exactly on the drawn circle. They must stay
-   siblings: the centring `transform` creates a stacking context, so nesting
-   the links inside the ring would trap them behind the portrait. */
+/* The arc and the social layer are siblings sharing identical geometry, so a
+   link placed at angle θ lands exactly on the drawn curve. The circle is huge
+   and anchored to this column's right edge, so only its right-hand sliver is
+   on screen — a gentle vertical curve rather than a ring around the portrait.
+   They must stay siblings: the centring `transform` creates a stacking
+   context, so nesting the links inside the arc would trap them behind the
+   portrait. */
 .hero__orbit,
 .hero__socials {
   position: absolute;
-  width: min(820px, 128%);
+  width: min(1000px, 175%);
   aspect-ratio: 1;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  right: 20px;
+  transform: translateY(-50%);
 }
 
 .hero__orbit-line {
@@ -818,14 +826,15 @@ ul {
   display: block;
 }
 
-.hero__orbit-line circle {
+/* stroke-width is in viewBox units, so it scales with the arc (~2px on screen) */
+.hero__orbit-line path {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.13);
-  stroke-width: 0.2;
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 0.18;
 }
 
 .hero__orbit-line .orbit-inner {
-  stroke: rgba(255, 255, 255, 0.055);
+  stroke: rgba(255, 255, 255, 0.06);
   stroke-dasharray: 1.1 1.7;
 }
 
@@ -875,14 +884,15 @@ ul {
   mask-image: linear-gradient(to bottom, #000 94%, transparent 100%);
 }
 
+/* Aligned to the container's left edge — centred, it would land on top of
+   the portrait now that the figure occupies the right of the hero. */
 .hero__scroll {
   position: absolute;
-  left: 50%;
-  bottom: 28px;
-  transform: translateX(-50%);
+  left: max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter)));
+  bottom: 30px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   font-size: 0.72rem;
   letter-spacing: 0.22em;
@@ -2283,17 +2293,8 @@ ul {
    the viewport, leaving no room for the ring to sit outside the portrait. Pad
    the hero's right edge so the 3 o'clock link stays fully on screen. */
 @media (min-width: 1101px) and (max-width: 1500px) {
-  .hero .container {
-    padding-right: 130px;
-  }
-
-  .hero__orbit,
-  .hero__socials {
-    width: 128%;
-  }
-
-  .hero__portrait {
-    width: 94%;
+  .hero__figure {
+    padding-right: 108px;
   }
 }
 
@@ -2318,16 +2319,18 @@ ul {
   .hero__figure {
     min-height: 620px;
     order: -1;
+    justify-content: center;
+    padding-right: 76px;
   }
 
   .hero__portrait {
-    width: min(400px, 66%);
+    width: min(400px, 78%);
   }
 
-  /* Keep the ring narrow enough that the 3 o'clock link stays on screen. */
   .hero__orbit,
   .hero__socials {
-    width: min(530px, 84%);
+    width: min(760px, 150%);
+    right: 34px;
   }
 
   .orbit-link {
@@ -2485,15 +2488,17 @@ ul {
 
   .hero__figure {
     min-height: 500px;
+    padding-right: 58px;
   }
 
   .hero__portrait {
-    width: min(290px, 58%);
+    width: min(290px, 74%);
   }
 
   .hero__orbit,
   .hero__socials {
-    width: min(360px, 78%);
+    width: min(520px, 150%);
+    right: 26px;
   }
 
   .orbit-link {

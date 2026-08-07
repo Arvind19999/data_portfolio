@@ -5,8 +5,11 @@ import { Download, Play } from './Icons';
 import { socialIcon } from './socialIcon';
 import VideoModal from './VideoModal';
 
-/** Where each social link sits on the ring, in degrees (0° = right, up = -). */
-const ORBIT_ANGLES = [-64, -32, 0, 32, 64];
+/**
+ * Where each social link sits on the arc, in degrees (0° = due right, up = -).
+ * Kept inside the drawn segment (±52°) so every icon lands on the visible line.
+ */
+const ORBIT_ANGLES = [-34, -17, 0, 17, 34];
 
 export default function Hero() {
   const [video, setVideo] = useState(false);
@@ -59,9 +62,13 @@ export default function Hero() {
                 placed at `angle` degrees on it, so the drawn line passes
                 exactly through every icon. 0° is due right, negative is up. */}
             <div className="hero__orbit">
-              <svg className="hero__orbit-line" viewBox="-1 -1 102 102" aria-hidden="true">
-                <circle cx="50" cy="50" r="50" />
-                <circle className="orbit-inner" cx="50" cy="50" r="39" />
+              <svg className="hero__orbit-line" viewBox="0 0 100 100" aria-hidden="true">
+                {/* Only the right-hand segment of the circle is drawn, so the
+                    curve stays beside the portrait instead of sweeping back
+                    across the headline. Endpoints sit just past the outermost
+                    links (±42° here, links at ±34°). */}
+                <path d="M87.16 16.54 A50 50 0 0 1 87.16 83.46" />
+                <path className="orbit-inner" d="M77.43 19.53 A41 41 0 0 1 77.43 80.47" />
               </svg>
             </div>
 
