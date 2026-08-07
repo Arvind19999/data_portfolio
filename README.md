@@ -68,6 +68,7 @@ A project in `src/data/site.js` can carry an optional `media` block:
 media: {
   thumb: { src, width, height, position },
   video: { src, poster, width, height, length, title, caption },
+  diagram: 'migration-flow',
   shots: [{ src, width, height, span, title, caption }],
 }
 ```
@@ -79,6 +80,11 @@ media: {
   artwork. Nothing of the file downloads until the poster is clicked — the
   `<video>` element is not mounted before then. A portrait or stacked recording
   is held to 620px wide automatically, otherwise it would swallow the page.
+- `diagram` fills the hero when there is no video, naming a hand-drawn SVG from
+  the registry in `src/components/ProjectDiagram.jsx`. Use it when the project
+  has no screen worth recording but does have a shape worth showing. SVG text
+  does not wrap, so the strings inside are sized to their boxes — lengthening
+  one runs it past the border. Drawings, not captures: label them honestly.
 - `shots` render below the write-up at full container width; `span: 'full'`
   gives a shot the whole row, anything else pairs two across. Clicking one
   opens the lightbox (arrow keys to step, Escape to close).
@@ -100,7 +106,9 @@ ffmpeg -ss 70 -i original.mp4 -frames:v 1 -vf scale=1440:-2 -q:v 4 \
 Crop screenshots down to their content before adding them — a capture with a
 large empty margin reads as a grey slab on the dark page. **Crop off the
 browser chrome too**: the URL bar and bookmarks bar expose personal links and
-have nothing to do with the work.
+have nothing to do with the work. Same for any query result grid — a notebook
+`display()` is live production data, so the rows underneath it are real names,
+emails and password hashes.
 
 ```bash
 ffmpeg -i raw.png -vf "crop=1852:928:0:74" screen.png    # drop the top 74px

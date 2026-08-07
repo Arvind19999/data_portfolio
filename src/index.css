@@ -1834,6 +1834,102 @@ ul {
    Project media — walkthrough video + screenshot gallery
    ========================================================================== */
 
+/* -- hero diagram (MigrationDiagram.jsx) --------------------------------- */
+
+.pd__diagram {
+  margin-bottom: 56px;
+}
+
+.mig {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--bg-deep);
+  overflow: hidden;
+}
+
+.mig__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.mig__box {
+  fill: var(--bg-alt);
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.mig__box--engine {
+  fill: var(--card);
+  stroke-width: 1.4;
+}
+
+.mig__box--target {
+  fill: var(--card);
+}
+
+.mig__box--note {
+  fill: transparent;
+  stroke: var(--line-soft);
+}
+
+.mig__link {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1.6;
+}
+
+.mig__link--main {
+  stroke-width: 2.2;
+  stroke-opacity: 0.55;
+}
+
+.mig__rule {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.mig__eyebrow {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  fill: var(--muted-dim);
+}
+
+.mig__name {
+  font-family: var(--font-display);
+  font-size: 30px;
+  fill: var(--text);
+}
+
+.mig__meta,
+.mig__note-text {
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  font-weight: 300;
+  fill: var(--muted);
+}
+
+.mig__figure {
+  font-family: var(--font-display);
+  font-size: 20px;
+}
+
+.mig__num {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+}
+
+.mig__note-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  fill: var(--text);
+}
+
 /* reset the UA figure margin — the modifier below sets the real spacing */
 .pv {
   margin: 0;
@@ -2723,6 +2819,16 @@ ul {
 @media (max-width: 860px) {
   .section {
     padding: 78px 0;
+  }
+
+  /* Scaling the 1200-unit canvas below this puts the labels under 10px, so the
+     diagram holds a readable width and the wrapper scrolls instead. */
+  .mig {
+    overflow-x: auto;
+  }
+
+  .mig__svg {
+    width: 780px;
   }
 
   .banner {

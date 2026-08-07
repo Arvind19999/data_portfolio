@@ -2,6 +2,7 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 
 import Banner from '../components/Banner';
 import { ChevronLeft, ChevronRight, DoubleChevron } from '../components/Icons';
+import ProjectDiagram from '../components/ProjectDiagram';
 import ProjectGallery from '../components/ProjectGallery';
 import ProjectVideo from '../components/ProjectVideo';
 import ProjectViz from '../components/ProjectViz';
@@ -36,11 +37,15 @@ export default function ProjectDetails() {
       <section className="section">
         <div className="arcs" />
         <div className="container">
-          {/* A recorded walkthrough beats generated artwork whenever there is
-              one, so it takes the hero slot; otherwise the artwork stands in. */}
+          {/* Hero slot, best first: a recorded walkthrough, else a diagram drawn
+              for the project, else the generated artwork as a fallback. */}
           {media?.video ? (
             <Reveal>
               <ProjectVideo video={media.video} className="pd__video" />
+            </Reveal>
+          ) : media?.diagram ? (
+            <Reveal className="pd__diagram">
+              <ProjectDiagram name={media.diagram} accent={project.accent} />
             </Reveal>
           ) : (
             <Reveal className="pd__hero">

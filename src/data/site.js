@@ -535,58 +535,124 @@ export const projects = [
     },
   },
   {
-    slug: 'data-migration-pipelines',
-    title: 'Data Migration Pipelines',
-    category: 'Cross-Database ETL / PySpark',
+    slug: 'driving-school-migration',
+    title: 'Driving School Platform — MySQL To PostgreSQL',
+    category: 'Multi-Tenant Migration / PySpark',
     tags: ['Migration', 'PySpark', 'JDBC'],
-    year: '2024 – 2025',
-    client: 'Multiple Engagements',
-    duration: '12 months',
-    date: 'Jun 2024',
+    year: '2026',
+    // TODO: confirm — the notebooks are dated Jul 2026, but I have set the client
+    // and duration from memory of the engagement rather than anything in the repo.
+    client: 'Azminds Services Pvt. Ltd.',
+    duration: '2 months',
+    date: 'Jul 2026',
     accent: '#f6ad55',
     summary:
-      'Five production cross-database migrations, each reconciled row by row before cutover.',
+      'Two live driving-school systems folded into one multi-tenant PostgreSQL schema, with the new platform’s columns reconstructed from the old one’s evidence.',
     overview: [
-      'Five distinct migration paths, each with its own failure mode: type precision loss, dialect-specific NULL semantics, warehouse bulk-load requirements, and datasets large enough that a mid-run failure could not mean starting over.',
-      'The shared foundation across all of them was PySpark reading through JDBC with partitioned parallel reads, plus a validation harness that compared row counts and detected duplicates on every table before the target was declared live.',
+      'A legacy driving-school application on MySQL and a newer PostgreSQL one had to become a single tenant on a multi-tenant platform — every record landing in one schema, tenant_<uuid>, on the new database. Forty-four target tables, drawn from seventeen legacy MySQL tables plus the newer system’s own.',
+      'Databricks and PySpark did the work over JDBC, but the moving of bytes was never the hard part. The two systems had been designed independently, so they disagreed about almost everything that matters when you merge them: primary keys, what a school is, and which columns exist at all.',
     ],
     challenge:
-      'Large-scale relational datasets had to move between incompatible engines without data loss, and without a migration window long enough to allow a full restart on failure.',
+      'Both systems numbered their rows from one, the legacy database stored a student’s school as free-typed text, and several columns the new platform treats as required simply had no counterpart in the old schema.',
     approach: [
       {
-        title: 'MySQL → PostgreSQL',
-        text: 'PySpark JDBC connectors with schema mapping, type casting and incremental load strategies.',
+        title: 'One ID space out of two',
+        text: 'Each system’s keys were re-based to continue after the other’s maximum rather than collide with it — a window-ordered row number plus an offset. Every migrated row kept an old_id, so foreign keys could be re-pointed afterwards and any record traced back to the system it came from.',
       },
       {
-        title: 'PostgreSQL → Snowflake',
-        text: 'Automated pipelines using the Snowflake Spark connector, staging through S3 for efficient bulk loading.',
+        title: 'Free text resolved to a foreign key',
+        text: 'The legacy database had students typing their school name; the new one has a schools table. Names were trimmed and lowered, known aliases collapsed ("Carpenteria High" and "Carpenteria High School" are one school, "Other - Not Listed" and "Not Listed" are one bucket), then broadcast-joined against the school table to produce a real school_id.',
       },
       {
-        title: 'MSSQL → BigQuery',
-        text: 'CTE-based transformation chains across 11 stages, followed by PySpark-to-BigQuery writes via a GCS staging bucket.',
+        title: 'Missing columns derived from behaviour',
+        text: 'Rather than defaulting the new platform’s flags, each was reconstructed from what the old data proved: driver_ed from appearing in the driver-ed progress or test-status tables, has_paid from those or from a transaction, locked_by_cancellation_package from holding an undeposited cancellation fee.',
       },
       {
-        title: 'Oracle → PostgreSQL',
-        text: 'Resolved CLOB and NUMBER precision compatibility issues with schema filtering during full-load migration.',
+        title: 'A transformation library, not 44 scripts',
+        text: 'Twenty-two shared helpers — column renaming, typed defaults for absent columns, a null vocabulary that folds "n/a", "unknown" and "not specified" back to real NULLs, generic multi-column joins, username synthesis — live in one notebook that every table notebook runs. The per-table work is then mostly mapping dictionaries.',
+      },
+      {
+        title: 'JDBC tuned at both ends',
+        text: 'Partitioned parallel reads with a fetch size on the source side, batched appends on the write side, and stringtype=unspecified on the PostgreSQL writer so the target casts incoming strings into its enum, UUID and JSON columns instead of rejecting them.',
       },
     ],
     results: [
-      { value: '5', label: 'Migration Paths' },
-      { value: '11', label: 'Transformation Stages' },
-      { value: '100%', label: 'Row-Count Reconciled' },
+      { value: '44', label: 'Tables Migrated' },
+      { value: '2 → 1', label: 'Systems Merged' },
+      { value: '22', label: 'Reusable Transforms' },
     ],
     stack: [
       'PySpark',
+      'Databricks',
       'JDBC',
-      'Snowflake',
-      'BigQuery',
-      'AWS S3',
-      'GCS',
-      'PostgreSQL',
       'MySQL',
-      'MSSQL',
-      'Oracle',
+      'PostgreSQL',
+      'MariaDB Driver',
+      'Spark SQL',
+      'Window Functions',
     ],
+    media: {
+      // No walkthrough for this one — a migration has nothing worth watching.
+      // The hero is a drawn diagram instead; see ProjectDiagram.jsx.
+      diagram: 'migration-flow',
+      // left-aligned: a centred 16/11 crop starts past the "FOR SCHOOL TABLES"
+      // heading and shows half a word
+      thumb: {
+        src: '/projects_data/driving_school_data_migration/schema-mapping.png',
+        width: 1756,
+        height: 930,
+        position: 'left center',
+      },
+      // Every shot is full-width: these are dual-pane code captures, and at half
+      // the container width the code stops being readable — which is the point.
+      shots: [
+        {
+          src: '/projects_data/driving_school_data_migration/schema-mapping.png',
+          width: 1756,
+          height: 930,
+          span: 'full',
+          title: 'Mapping the legacy schema onto the new one',
+          caption:
+            'Old column names on the left, the dictionaries that rename them into the target schema below, and the shared transformation notebook open alongside — the pairing every table notebook works in.',
+        },
+        {
+          src: '/projects_data/driving_school_data_migration/column-defaults.png',
+          width: 1756,
+          height: 930,
+          span: 'full',
+          title: 'Columns the legacy schema never had',
+          caption:
+            'A spec of column, type and default for everything the new platform expects and the old database cannot supply, applied by a helper that skips any column already present.',
+        },
+        {
+          src: '/projects_data/driving_school_data_migration/sequential-ids.png',
+          width: 1756,
+          height: 930,
+          span: 'full',
+          title: 'Two systems, one ID space',
+          caption:
+            'Lesson IDs and lesson ordering re-based to continue from the other system’s maximum, using the sequential-id helper on the right rather than trusting either source’s numbering.',
+        },
+        {
+          src: '/projects_data/driving_school_data_migration/union-and-join.png',
+          width: 1756,
+          height: 930,
+          span: 'full',
+          title: 'Merging the two sources',
+          caption:
+            'A union by name across mismatched columns, then a left join to pull across the fields only the newer system holds — description, address, city, state — before the combined frame is written.',
+        },
+        {
+          src: '/projects_data/driving_school_data_migration/jdbc-writers.png',
+          width: 1756,
+          height: 740,
+          span: 'full',
+          title: 'Landing in the tenant schema',
+          caption:
+            'The PostgreSQL writer: schema-qualified target table, batched appends across five partitions, and stringtype=unspecified so the database casts strings into its own column types.',
+        },
+      ],
+    },
   },
   {
     slug: 'yachtchartersuite',
@@ -793,45 +859,6 @@ export const projects = [
         },
       ],
     },
-  },
-  {
-    slug: 'sql-dialect-conversion',
-    title: 'SQL Dialect Conversion Platform',
-    category: 'SqlGlot / Python',
-    tags: ['SqlGlot', 'Python', 'Parsing'],
-    year: '2024',
-    client: 'Azminds Services Pvt. Ltd.',
-    duration: '2 months',
-    date: 'Sep 2024',
-    accent: '#63b3ed',
-    summary:
-      'A query translation tool that converts SQL across MySQL, MSSQL, PostgreSQL and Oracle dialects.',
-    overview: [
-      'Migrating a database means migrating every query that touched it. This tool takes the mechanical part of that work — dialect syntax differences — and automates it.',
-      'SqlGlot handles the AST-level translation; a layer of custom regex-based rules covers the vendor-specific constructs that a generic parser maps imperfectly.',
-    ],
-    challenge:
-      'Migration projects stalled on the manual rewrite of hundreds of vendor-specific queries between SQL dialects.',
-    approach: [
-      {
-        title: 'AST-based translation',
-        text: 'SqlGlot parses source SQL into an abstract syntax tree and regenerates it in the target dialect.',
-      },
-      {
-        title: 'Custom rule layer',
-        text: 'Regex-based transformation rules handle vendor-specific functions and syntax the generic parser maps imperfectly.',
-      },
-      {
-        title: 'Four-dialect coverage',
-        text: 'Bidirectional conversion across MySQL, MSSQL, PostgreSQL and Oracle.',
-      },
-    ],
-    results: [
-      { value: '4', label: 'SQL Dialects' },
-      { value: 'AST', label: 'Based Translation' },
-      { value: '2mo', label: 'Delivery Time' },
-    ],
-    stack: ['Python', 'SqlGlot', 'Regular Expressions'],
   },
 ];
 
