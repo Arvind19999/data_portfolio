@@ -1043,9 +1043,38 @@ ul {
    natural 1100×1164 and towers over the text. */
 .about-intro {
   display: grid;
-  grid-template-columns: 0.95fr 1.15fr;
-  gap: 60px;
+  grid-template-columns: 1fr 1.08fr;
+  gap: 86px;
   align-items: center;
+}
+
+.about-intro__copy > h2 {
+  margin-bottom: 4px;
+}
+
+/* Full-width strip under the two columns: facts on the left, actions right. */
+.about-facts {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px 60px;
+  flex-wrap: wrap;
+  margin-top: 64px;
+  padding-top: 38px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.about-facts__list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 40px;
+  flex: 1 1 460px;
+}
+
+.about-facts__actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 /* The cut-out is only a silhouette down to the desk — the desk itself runs to
@@ -1055,9 +1084,6 @@ ul {
   display: block;
   width: 100%;
   height: auto;
-  max-height: 620px;
-  object-fit: contain;
-  object-position: center bottom;
   -webkit-mask-image:
     linear-gradient(to bottom, #000 78%, transparent 100%),
     linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%);
@@ -2904,9 +2930,22 @@ ul {
     gap: 46px;
   }
 
+  /* Stacked, the photo would run the full container width and dwarf the copy,
+     so it is held to a portrait-sized block and centred. */
   .about-intro__media img {
-    max-height: 460px;
+    max-width: 420px;
     margin-inline: auto;
+  }
+
+  .about-facts {
+    margin-top: 46px;
+    padding-top: 32px;
+  }
+
+  .about-facts__list {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 26px;
+    flex-basis: 100%;
   }
 
   .info-card {
