@@ -1037,36 +1037,35 @@ ul {
   align-items: center;
 }
 
-/* About intro: photo beside the copy, both ending on the same line.
-   `stretch` is what does the fitting — the card takes the row height set by the
-   copy and the photo crops into it, rather than the photo setting the height
-   itself, which is what made it tower over the text. */
+/* About intro: cut-out photo beside the copy, no frame around it — the alpha
+   channel is real, so the page background carries straight through.
+   `max-height` is the fit: without it the photo sets its own height from its
+   natural 1100×1164 and towers over the text. */
 .about-intro {
   display: grid;
   grid-template-columns: 0.95fr 1.15fr;
-  gap: 70px;
-  align-items: stretch;
+  gap: 60px;
+  align-items: center;
 }
 
-/* The photo's background is white, so this is a light panel by design. Slightly
-   off-white — pure #fff glares against the rest of the page. */
-.about-intro__media {
-  display: grid;
-  min-height: 470px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: var(--r-md);
-  overflow: hidden;
-  background: #f3f3f6;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
-}
-
+/* The cut-out is only a silhouette down to the desk — the desk itself runs to
+   all three edges and would otherwise stop dead in mid-air. Fading those edges
+   is the same trick `.hero__portrait` uses on the portrait's bottom. */
 .about-intro__media img {
-  width: 100%;
-  height: 100%;
-  min-height: 0;
   display: block;
-  object-fit: cover;
-  object-position: center top;
+  width: 100%;
+  height: auto;
+  max-height: 620px;
+  object-fit: contain;
+  object-position: center bottom;
+  -webkit-mask-image:
+    linear-gradient(to bottom, #000 78%, transparent 100%),
+    linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%);
+  mask-image:
+    linear-gradient(to bottom, #000 78%, transparent 100%),
+    linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
 }
 
 .bar + .bar {
@@ -2905,10 +2904,9 @@ ul {
     gap: 46px;
   }
 
-  /* Stacked, there is no copy to take a height from, so the card sets its own. */
-  .about-intro__media {
-    min-height: 0;
-    aspect-ratio: 4 / 5;
+  .about-intro__media img {
+    max-height: 460px;
+    margin-inline: auto;
   }
 
   .info-card {

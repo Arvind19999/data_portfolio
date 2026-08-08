@@ -54,10 +54,10 @@ responsive down to 390px · `prefers-reduced-motion` support.
 ## Assets
 
 - `public/images/portrait.png` — hero portrait, a transparent-background cut-out
-- `public/images/about.jpg` — About page photo, on a white studio background.
-  It is cropped to the height of the copy beside it, so keep the subject
-  centred. The original was a background-remover *preview* export with the grey
-  checkerboard painted into its pixels; `assets_src/images/` keeps that copy.
+- `public/images/about.webp` — About page cut-out, with a real alpha channel so
+  it sits straight on the page background. WebP because the same cut-out is
+  1.2MB as a PNG and 117KB here. Its desk runs to the frame on three sides, so
+  `.about-intro__media img` fades those edges rather than letting them stop dead.
 - `public/files/Arbind_Sah_Resume.pdf` — served by every "Get Resume" button
 - `public/projects_data/<project>/` — screenshots and walkthrough video per project
 - `assets_src/` — original, uncompressed captures. **Not served**; kept out of
@@ -120,9 +120,12 @@ ffmpeg -i raw.png -vf "crop=1852:928:0:74" screen.png    # drop the top 74px
 Save photo-heavy screens as JPEG (`-q:v 3`) and flat UI screens as PNG — the
 same capture can be 4× larger in the wrong format.
 
-Replacing the portrait: use a PNG with a **real alpha channel**. Exports from
-background-remover previews often bake the grey checkerboard into the pixels
-instead — that renders as a visible checkerboard on the page. Size it around
+Replacing the portrait or the About cut-out: use a **real alpha channel**.
+Exports from background-remover previews often bake the grey checkerboard into
+the pixels instead — that renders as a visible checkerboard on the page, and it
+cannot be undone cleanly once the original mask is gone. The About image was
+recovered from one of these, but only because its white objects (the mug, the
+notepad) could be ruled back in by hand; ask for the transparent export first. Size it around
 1100px wide; the hero scales it and adds a drop shadow plus a soft fade at the
 bottom edge (`.hero__portrait` in `src/index.css`).
 
