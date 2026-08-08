@@ -28,7 +28,22 @@ export function ProjectCard({ project }) {
     <Link to={`/projects/${project.slug}`} className="proj">
       <div className="proj__media">
         <div className="proj__viz">
-          <ProjectViz seed={project.slug} accent={project.accent} />
+          {/* a real screenshot when the project has one, generated artwork otherwise */}
+          {project.media?.thumb ? (
+            <img
+              className="proj__img"
+              src={project.media.thumb.src}
+              alt=""
+              width={project.media.thumb.width}
+              height={project.media.thumb.height}
+              /* `position` steers the crop when centring would cut something
+                 that matters — a headline against the left edge, say. */
+              style={{ objectPosition: project.media.thumb.position }}
+              loading="lazy"
+            />
+          ) : (
+            <ProjectViz seed={project.slug} accent={project.accent} />
+          )}
         </div>
         <div className="proj__overlay">
           <span className="proj__cta">

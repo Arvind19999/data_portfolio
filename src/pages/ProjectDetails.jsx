@@ -2,6 +2,9 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 
 import Banner from '../components/Banner';
 import { ChevronLeft, ChevronRight, DoubleChevron } from '../components/Icons';
+import ProjectDiagram from '../components/ProjectDiagram';
+import ProjectGallery from '../components/ProjectGallery';
+import ProjectVideo from '../components/ProjectVideo';
 import ProjectViz from '../components/ProjectViz';
 import Reveal from '../components/Reveal';
 import { usePageMeta } from '../hooks/usePageMeta';
@@ -18,6 +21,7 @@ export default function ProjectDetails() {
 
   const prev = projects[index - 1];
   const next = projects[index + 1];
+  const media = project.media;
 
   return (
     <>
@@ -33,9 +37,21 @@ export default function ProjectDetails() {
       <section className="section">
         <div className="arcs" />
         <div className="container">
-          <Reveal className="pd__hero">
-            <ProjectViz seed={project.slug} accent={project.accent} />
-          </Reveal>
+          {/* Hero slot, best first: a recorded walkthrough, else a diagram drawn
+              for the project, else the generated artwork as a fallback. */}
+          {media?.video ? (
+            <Reveal>
+              <ProjectVideo video={media.video} className="pd__video" />
+            </Reveal>
+          ) : media?.diagram ? (
+            <Reveal className="pd__diagram">
+              <ProjectDiagram name={media.diagram} accent={project.accent} />
+            </Reveal>
+          ) : (
+            <Reveal className="pd__hero">
+              <ProjectViz seed={project.slug} accent={project.accent} />
+            </Reveal>
+          )}
 
           <div className="pd-grid">
             <div>
@@ -80,32 +96,6 @@ export default function ProjectDetails() {
                 </div>
               </Reveal>
 
-              {/* Prev / next ------------------------------------------- */}
-              <Reveal
-                delay={160}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  gap: 20,
-                  flexWrap: 'wrap',
-                  marginTop: 40,
-                  paddingTop: 34,
-                  borderTop: '1px solid var(--line)',
-                }}
-              >
-                {prev ? (
-                  <Link to={`/projects/${prev.slug}`} className="link-more">
-                    <ChevronLeft /> {prev.title}
-                  </Link>
-                ) : (
-                  <span />
-                )}
-                {next && (
-                  <Link to={`/projects/${next.slug}`} className="link-more">
-                    {next.title} <ChevronRight />
-                  </Link>
-                )}
-              </Reveal>
             </div>
 
             {/* Sidebar --------------------------------------------------- */}
@@ -148,6 +138,39 @@ export default function ProjectDetails() {
               </div>
             </aside>
           </div>
+
+          {/* Screenshots sit outside the grid so they get the full container
+              width — these are dense UI captures and the sidebar column would
+              squeeze them past the point of being readable. */}
+          {media?.shots?.length > 0 && (
+            <div className="pd-shots">
+              <Reveal>
+                <span className="sec-label">Inside The Build</span>
+                <h3 style={{ marginBottom: 10 }}>Screens From The Platform</h3>
+                <p className="pd-shots__lede">
+                  Captured from the running application. Click any screen to open it full size.
+                </p>
+              </Reveal>
+
+              <ProjectGallery shots={media.shots} />
+            </div>
+          )}
+
+          {/* Prev / next ------------------------------------------------- */}
+          <Reveal className="pd-nav">
+            {prev ? (
+              <Link to={`/projects/${prev.slug}`} className="link-more">
+                <ChevronLeft /> {prev.title}
+              </Link>
+            ) : (
+              <span />
+            )}
+            {next && (
+              <Link to={`/projects/${next.slug}`} className="link-more">
+                {next.title} <ChevronRight />
+              </Link>
+            )}
+          </Reveal>
         </div>
       </section>
     </>

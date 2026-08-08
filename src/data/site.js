@@ -28,6 +28,12 @@ export const profile = {
   videoUrl: 'https://www.youtube.com/embed/PhvVNZ0FZZo',
 };
 
+/**
+ * Rendered on the arc beside the hero portrait, and in the footer / drawer.
+ * Order here is the order they sit on the arc, top to bottom.
+ *
+ * TODO: replace the two placeholder URLs below with your real profiles.
+ */
 export const socials = [
   {
     name: 'LinkedIn',
@@ -35,9 +41,12 @@ export const socials = [
     url: 'https://linkedin.com/in/arbind-sah-a929051a8',
     icon: 'linkedin',
   },
+  // placeholder — swap for your Facebook profile
+  { name: 'Facebook', short: 'fb', url: 'https://facebook.com/', icon: 'facebook' },
   { name: 'GitHub', short: 'gh', url: 'https://github.com/Arvind19999', icon: 'github' },
+  // placeholder — swap for your Fiverr gig URL
+  { name: 'Fiverr', short: 'fvr', url: 'https://www.fiverr.com/', icon: 'fiverr' },
   { name: 'Email', short: '@', url: 'mailto:SHa.arvind99@gmail.com', icon: 'mail' },
-  { name: 'Resume', short: 'cv', url: '/files/Arbind_Sah_Resume.pdf', icon: 'file' },
 ];
 
 export const stats = [
@@ -297,6 +306,71 @@ export const projects = [
       { value: '3', label: 'Processing Engines' },
     ],
     stack: ['Python', 'PySpark', 'Apache Livy', 'Databricks', 'AWS', 'PostgreSQL', 'Docker'],
+
+    /**
+     * Optional. Any project can carry a `media` block; the detail page swaps its
+     * generated artwork for the video and renders the gallery below the write-up.
+     * `span: 'full'` gives a shot the whole row, otherwise it takes half.
+     */
+    media: {
+      /* Card artwork in the project grid. Cropped to 16/11 there, so pick a
+         shot whose subject sits in the middle. */
+      thumb: { src: '/projects_data/dfai/pipeline.png', width: 1859, height: 963 },
+
+      video: {
+        src: '/projects_data/dfai/walkthrough.mp4',
+        poster: '/projects_data/dfai/walkthrough-poster.jpg',
+        width: 1440,
+        height: 722,
+        length: '5 min',
+        title: 'Building a pipeline end to end',
+        caption:
+          'A full walkthrough of the Marketplace Seller Risk Scoring pipeline — assembling the graph on the canvas, running it on Databricks, watching the execution log, then inspecting results and retention settings. No audio.',
+      },
+      shots: [
+        {
+          src: '/projects_data/dfai/pipeline.png',
+          width: 1859,
+          height: 963,
+          span: 'full',
+          title: 'The pipeline canvas',
+          caption:
+            'A HubSpot revenue-operations pipeline: five API sources fan out through Explode, Join, Derived, Union, Aggregate and Route nodes into five PostgreSQL sinks, each with a profiling step attached. The left rail is the node palette the graph is assembled from.',
+        },
+        {
+          src: '/projects_data/dfai/pipeline2.png',
+          width: 1889,
+          height: 963,
+          title: 'Routing and windowing',
+          caption:
+            'A Route node splitting 15,000 customer-order rows three ways by rule, with the main branch running Aggregate → Derived → Window before landing. Row counts are shown on every edge.',
+        },
+        {
+          src: '/projects_data/dfai/query.png',
+          width: 1648,
+          height: 898,
+          title: 'Query editor',
+          caption:
+            'The built-in editor with schema browsing, saved and recent queries, and an engine switch — the same query can be sent to PostgreSQL directly or to Databricks.',
+        },
+        {
+          src: '/projects_data/dfai/chart.png',
+          width: 1889,
+          height: 760,
+          title: 'Column profiling',
+          caption:
+            'Automatic profiling of every output column — cardinality, null counts, min/mean/max — with a per-column histogram. Here, customer tier across 1,000 records.',
+        },
+        {
+          src: '/projects_data/dfai/chart2.png',
+          width: 1889,
+          height: 760,
+          title: 'Distribution at scale',
+          caption:
+            'The same profiler over a 7,696-row sink, showing market-segment distribution alongside the raw distribution table.',
+        },
+      ],
+    },
   },
   {
     slug: 'text-to-sql-engine',
@@ -351,62 +425,238 @@ export const projects = [
     ],
   },
   {
-    slug: 'data-migration-pipelines',
-    title: 'Data Migration Pipelines',
-    category: 'Cross-Database ETL / PySpark',
-    tags: ['Migration', 'PySpark', 'JDBC'],
-    year: '2024 – 2025',
-    client: 'Multiple Engagements',
-    duration: '12 months',
-    date: 'Jun 2024',
-    accent: '#f6ad55',
+    slug: 'yacht-scraper',
+    title: 'Yacht Scraper — Charter Fleet Extraction',
+    category: 'Selenium / FastAPI / React',
+    tags: ['Web Scraping', 'FastAPI', 'Selenium'],
+    year: '2026',
+    // TODO: confirm these two — the repo only shows commits on 28 Jul 2026, so
+    // the duration is a guess and the client is inferred from the gig artwork.
+    client: 'Freelance Engagement',
+    duration: '3 weeks',
+    date: 'Jul 2026',
+    accent: '#e0b877',
     summary:
-      'Five production cross-database migrations, each reconciled row by row before cutover.',
+      'A charter fleet scraped into a queryable dataset — run it from a browser, watch it live, export it, and diff one run against the last to see what moved.',
     overview: [
-      'Five distinct migration paths, each with its own failure mode: type precision loss, dialect-specific NULL semantics, warehouse bulk-load requirements, and datasets large enough that a mid-run failure could not mean starting over.',
-      'The shared foundation across all of them was PySpark reading through JDBC with partitioned parallel reads, plus a validation harness that compared row counts and detected duplicates on every table before the target was declared live.',
+      'Two-phase Selenium scrape behind a FastAPI job runner, with a React front end that turns it into something a non-engineer can operate: start a run, watch the log stream, browse what came back and export it. Phase one collects every card on the fleet page; phase two opens each yacht’s detail page for the gallery, specifications, features, accommodation and seasonal rates.',
+      'The interesting part is not the parsing — it is what happens when a run does not finish. A real browser session over 111 yachts at 10–15 seconds each is long enough that cancellations, failed pages and server restarts are normal, so the whole job model is built around resuming rather than starting over.',
     ],
     challenge:
-      'Large-scale relational datasets had to move between incompatible engines without data loss, and without a migration window long enough to allow a full restart on failure.',
+      'A scrape long enough to be interrupted is a scrape that will be interrupted — and re-running the whole fleet to recover a handful of failed pages costs an hour of real browser time.',
     approach: [
       {
-        title: 'MySQL → PostgreSQL',
-        text: 'PySpark JDBC connectors with schema mapping, type casting and incremental load strategies.',
+        title: 'Every card persisted before navigation',
+        text: 'Phase 1 writes each yacht card to its own table the moment it is parsed, before phase 2 navigates away. That single decision is what makes resume possible: the outstanding work is just the cards with no successful record yet.',
       },
       {
-        title: 'PostgreSQL → Snowflake',
-        text: 'Automated pipelines using the Snowflake Spark connector, staging through S3 for efficient bulk loading.',
+        title: 'Retry and resume as phase-2-only runs',
+        text: 'Retry re-runs the yachts whose detail page failed; resume finishes everything a cancelled or crashed job never reached. Neither revisits the fleet page, so both cost one detail page per yacht and nothing else.',
       },
       {
-        title: 'MSSQL → BigQuery',
-        text: 'CTE-based transformation chains across 11 stages, followed by PySpark-to-BigQuery writes via a GCS staging bucket.',
+        title: 'Interrupted jobs reconciled at startup',
+        text: 'A job’s state lives half in the database and half in the process. Any row still marked running after a restart is lying, so startup marks those interrupted — a terminal status you can resume from, rather than a ghost that blocks every future run.',
       },
       {
-        title: 'Oracle → PostgreSQL',
-        text: 'Resolved CLOB and NUMBER precision compatibility issues with schema filtering during full-load migration.',
+        title: 'Run-over-run diffing',
+        text: 'Two jobs compared per yacht across the fields worth alerting on — rates, availability calendar, agent contacts, specs — with signed deltas on the numbers. Image URLs are deliberately excluded: the source rewrites them on every deploy and would drown every real change.',
+      },
+      {
+        title: 'Live progress over SSE',
+        text: 'Each job writes to the database as it goes and pushes to an in-memory ring buffer that feeds a cursor-based SSE stream, so the browser gets a live log and per-yacht progress without polling the database.',
+      },
+      {
+        title: 'Exports in the shape the next tool wants',
+        text: 'JSON keeps the nesting; CSV, XLSX and NDJSON flatten to one row per yacht with a pipe separator, because yacht features contain commas. An image manifest exports one row per gallery image, ready for wget or an asset pipeline.',
       },
     ],
     results: [
-      { value: '5', label: 'Migration Paths' },
-      { value: '11', label: 'Transformation Stages' },
-      { value: '100%', label: 'Row-Count Reconciled' },
+      { value: '111', label: 'Yachts In The Fleet' },
+      { value: '25', label: 'Fields Per Yacht' },
+      { value: '4,262', label: 'Gallery Images' },
+    ],
+    stack: [
+      'Python',
+      'FastAPI',
+      'Selenium',
+      'BeautifulSoup',
+      'SQLAlchemy',
+      'React',
+      'SQLite / PostgreSQL',
+      'SSE',
+    ],
+
+    media: {
+      // left-aligned: a centred crop cuts the first letter off the headline
+      thumb: {
+        src: '/projects_data/yacht_scrapping/overview.png',
+        width: 1280,
+        height: 769,
+        position: 'left center',
+      },
+
+      video: {
+        src: '/projects_data/yacht_scrapping/walkthrough.mp4',
+        poster: '/projects_data/yacht_scrapping/walkthrough-poster.jpg',
+        width: 1280,
+        height: 1414,
+        length: '1 min',
+        title: 'A run, both ends at once',
+        caption:
+          'The control panel on top and the browser it is driving underneath — progress counters, the live log and each detail page loading in real time as Selenium works through the fleet. No audio.',
+      },
+      shots: [
+        {
+          src: '/projects_data/yacht_scrapping/overview.png',
+          width: 1280,
+          height: 769,
+          span: 'full',
+          title: 'What the scrape produces',
+          caption:
+            '111 yachts, 25 fields each and 4,262 gallery images, available as JSON, CSV, Excel or straight off the API — with the crawler dashboard showing fleet totals, average charter rate and vessel length across the collected set.',
+        },
+        {
+          src: '/projects_data/yacht_scrapping/dashboard.png',
+          width: 1280,
+          height: 769,
+          title: 'Analytics over the result set',
+          caption:
+            'The collected fleet as a dataset rather than a file — capacity by shipyard, weekly rate against overall length, build-decade distribution and booking-calendar telemetry, all computed from the scraped records.',
+        },
+        {
+          src: '/projects_data/yacht_scrapping/before-after.png',
+          width: 1280,
+          height: 769,
+          title: 'Raw source to typed record',
+          caption:
+            'The actual transformation: minified markup with base64 placeholders and an inline __NEXT__ payload on the left, a typed record with normalised numbers, currency and a stable unique key on the right.',
+        },
+      ],
+    },
+  },
+  {
+    slug: 'driving-school-migration',
+    title: 'Driving School Platform — MySQL To PostgreSQL',
+    category: 'Multi-Tenant Migration / PySpark',
+    tags: ['Migration', 'PySpark', 'JDBC'],
+    year: '2026',
+    // TODO: confirm — the notebooks are dated Jul 2026, but I have set the client
+    // and duration from memory of the engagement rather than anything in the repo.
+    client: 'Azminds Services Pvt. Ltd.',
+    duration: '2 months',
+    date: 'Jul 2026',
+    accent: '#f6ad55',
+    summary:
+      'Two live driving-school systems folded into one multi-tenant PostgreSQL schema, with the new platform’s columns reconstructed from the old one’s evidence.',
+    overview: [
+      'A legacy driving-school application on MySQL and a newer PostgreSQL one had to become a single tenant on a multi-tenant platform — every record landing in one schema, tenant_<uuid>, on the new database. Forty-four target tables, drawn from seventeen legacy MySQL tables plus the newer system’s own.',
+      'Databricks and PySpark did the work over JDBC, but the moving of bytes was never the hard part. The two systems had been designed independently, so they disagreed about almost everything that matters when you merge them: primary keys, what a school is, and which columns exist at all.',
+    ],
+    challenge:
+      'Both systems numbered their rows from one, the legacy database stored a student’s school as free-typed text, and several columns the new platform treats as required simply had no counterpart in the old schema.',
+    approach: [
+      {
+        title: 'One ID space out of two',
+        text: 'Each system’s keys were re-based to continue after the other’s maximum rather than collide with it — a window-ordered row number plus an offset. Every migrated row kept an old_id, so foreign keys could be re-pointed afterwards and any record traced back to the system it came from.',
+      },
+      {
+        title: 'Free text resolved to a foreign key',
+        text: 'The legacy database had students typing their school name; the new one has a schools table. Names were trimmed and lowered, known aliases collapsed ("Carpenteria High" and "Carpenteria High School" are one school, "Other - Not Listed" and "Not Listed" are one bucket), then broadcast-joined against the school table to produce a real school_id.',
+      },
+      {
+        title: 'Missing columns derived from behaviour',
+        text: 'Rather than defaulting the new platform’s flags, each was reconstructed from what the old data proved: driver_ed from appearing in the driver-ed progress or test-status tables, has_paid from those or from a transaction, locked_by_cancellation_package from holding an undeposited cancellation fee.',
+      },
+      {
+        title: 'A transformation library, not 44 scripts',
+        text: 'Twenty-two shared helpers — column renaming, typed defaults for absent columns, a null vocabulary that folds "n/a", "unknown" and "not specified" back to real NULLs, generic multi-column joins, username synthesis — live in one notebook that every table notebook runs. The per-table work is then mostly mapping dictionaries.',
+      },
+      {
+        title: 'JDBC tuned at both ends',
+        text: 'Partitioned parallel reads with a fetch size on the source side, batched appends on the write side, and stringtype=unspecified on the PostgreSQL writer so the target casts incoming strings into its enum, UUID and JSON columns instead of rejecting them.',
+      },
+    ],
+    results: [
+      { value: '44', label: 'Tables Migrated' },
+      { value: '2 → 1', label: 'Systems Merged' },
+      { value: '22', label: 'Reusable Transforms' },
     ],
     stack: [
       'PySpark',
+      'Databricks',
       'JDBC',
-      'Snowflake',
-      'BigQuery',
-      'AWS S3',
-      'GCS',
-      'PostgreSQL',
       'MySQL',
-      'MSSQL',
-      'Oracle',
+      'PostgreSQL',
+      'MariaDB Driver',
+      'Spark SQL',
+      'Window Functions',
     ],
+    media: {
+      // No walkthrough for this one — a migration has nothing worth watching.
+      // The hero is a drawn diagram instead; see ProjectDiagram.jsx.
+      diagram: 'migration-flow',
+      // left-aligned: a centred 16/11 crop starts past the "FOR SCHOOL TABLES"
+      // heading and shows half a word
+      thumb: {
+        src: '/projects_data/driving_school_data_migration/schema-mapping.png',
+        width: 1756,
+        height: 930,
+        position: 'left center',
+      },
+      // Every shot is full-width: these are dual-pane code captures, and at half
+      // the container width the code stops being readable — which is the point.
+      shots: [
+        {
+          src: '/projects_data/driving_school_data_migration/schema-mapping.png',
+          width: 1756,
+          height: 930,
+          span: 'full',
+          title: 'Mapping the legacy schema onto the new one',
+          caption:
+            'Old column names on the left, the dictionaries that rename them into the target schema below, and the shared transformation notebook open alongside — the pairing every table notebook works in.',
+        },
+        {
+          src: '/projects_data/driving_school_data_migration/column-defaults.png',
+          width: 1756,
+          height: 930,
+          span: 'full',
+          title: 'Columns the legacy schema never had',
+          caption:
+            'A spec of column, type and default for everything the new platform expects and the old database cannot supply, applied by a helper that skips any column already present.',
+        },
+        {
+          src: '/projects_data/driving_school_data_migration/sequential-ids.png',
+          width: 1756,
+          height: 930,
+          span: 'full',
+          title: 'Two systems, one ID space',
+          caption:
+            'Lesson IDs and lesson ordering re-based to continue from the other system’s maximum, using the sequential-id helper on the right rather than trusting either source’s numbering.',
+        },
+        {
+          src: '/projects_data/driving_school_data_migration/union-and-join.png',
+          width: 1756,
+          height: 930,
+          span: 'full',
+          title: 'Merging the two sources',
+          caption:
+            'A union by name across mismatched columns, then a left join to pull across the fields only the newer system holds — description, address, city, state — before the combined frame is written.',
+        },
+        {
+          src: '/projects_data/driving_school_data_migration/jdbc-writers.png',
+          width: 1756,
+          height: 740,
+          span: 'full',
+          title: 'Landing in the tenant schema',
+          caption:
+            'The PostgreSQL writer: schema-qualified target table, batched appends across five partitions, and stringtype=unspecified so the database casts strings into its own column types.',
+        },
+      ],
+    },
   },
   {
-    slug: 'yacht-cloud',
-    title: 'Yacht Cloud — Charter Management',
+    slug: 'yachtchartersuite',
+    title: 'YachtCharterSuite — Charter Management',
     category: 'Grails / Elasticsearch / AWS',
     tags: ['Grails', 'Elasticsearch', 'AWS Lambda'],
     year: '2024 – Ongoing',
@@ -417,7 +667,7 @@ export const projects = [
     summary:
       'A charter management platform with full-text yacht search, an AI chatbot, and an async multi-site scraper running on Lambda.',
     overview: [
-      'Yacht Cloud handles the operational side of charter management — yachts, bookings, crew profiles, collaboration, payments with installment support and expense tracking, built on Grails/GORM with Spring Security.',
+      'YachtCharterSuite handles the operational side of charter management — yachts, bookings, crew profiles, collaboration, payments with installment support and expense tracking, built on Grails/GORM with Spring Security.',
       'The data engineering work sat underneath: an Elasticsearch layer powering both full-text search and an AI chatbot that resolves queries about offers, availability and booking status, plus a scraper that keeps listing data current.',
     ],
     challenge:
@@ -455,6 +705,64 @@ export const projects = [
       'PySpark',
       'OpenAI API',
     ],
+
+    media: {
+      thumb: { src: '/projects_data/ycs/browse-fleet.jpg', width: 1852, height: 928 },
+
+      video: {
+        src: '/projects_data/ycs/walkthrough.mp4',
+        poster: '/projects_data/ycs/walkthrough-poster.jpg',
+        width: 1440,
+        height: 722,
+        length: '3 min',
+        title: 'A tour of the platform',
+        caption:
+          'Operator dashboard through the searchable fleet catalogue and into a single yacht — pricing, gallery and brochure — showing how the scraped listings and the operator-managed ones sit in one place. No audio.',
+      },
+      shots: [
+        {
+          src: '/projects_data/ycs/browse-fleet.jpg',
+          width: 1852,
+          height: 928,
+          span: 'full',
+          title: 'Browsing 2,271 yachts',
+          caption:
+            'The Elasticsearch layer from the user\'s side — the scraped catalogue filtered by region, dates, guests, yacht type, length and price, each card expandable into availability, pricing and offers without leaving the results.',
+        },
+        {
+          src: '/projects_data/ycs/dashboard.png',
+          width: 1852,
+          height: 928,
+          title: 'Operator dashboard',
+          caption:
+            'Revenue, occupancy rate and average booking duration against the previous year, the booking schedule with payment state per charter, and the live calendar down the right.',
+        },
+        {
+          src: '/projects_data/ycs/yacht-database.png',
+          width: 1852,
+          height: 928,
+          title: 'Managed vs scraped',
+          caption:
+            'The admin split that makes the catalogue work: 15 operator-managed yachts against 3,336 scraped ones, with a standing warning for the 945 listings still missing a contact — enquiry routing depends on it.',
+        },
+        {
+          src: '/projects_data/ycs/yacht-gallery.jpg',
+          width: 1852,
+          height: 928,
+          title: 'Media management',
+          caption:
+            'S3-backed gallery for one yacht — 33 images auto-sorted into Aerial, Exterior, Interior and Lifestyle, each re-taggable, feeding the public brochure. The progress bar tracks how complete a listing is.',
+        },
+        {
+          src: '/projects_data/ycs/life-on-deck.jpg',
+          width: 1852,
+          height: 900,
+          title: 'Life on Deck',
+          caption:
+            'Shared moments from each charter, organised per yacht and synced into the brochures — the content side that keeps a listing current once the scraper has done its part.',
+        },
+      ],
+    },
   },
   {
     slug: 'blogs-automation-flow',
@@ -498,45 +806,59 @@ export const projects = [
       { value: '3', label: 'Pipeline States' },
     ],
     stack: ['n8n', 'Gmail API', 'OpenAI API', 'REST APIs', 'JSON'],
-  },
-  {
-    slug: 'sql-dialect-conversion',
-    title: 'SQL Dialect Conversion Platform',
-    category: 'SqlGlot / Python',
-    tags: ['SqlGlot', 'Python', 'Parsing'],
-    year: '2024',
-    client: 'Azminds Services Pvt. Ltd.',
-    duration: '2 months',
-    date: 'Sep 2024',
-    accent: '#63b3ed',
-    summary:
-      'A query translation tool that converts SQL across MySQL, MSSQL, PostgreSQL and Oracle dialects.',
-    overview: [
-      'Migrating a database means migrating every query that touched it. This tool takes the mechanical part of that work — dialect syntax differences — and automates it.',
-      'SqlGlot handles the AST-level translation; a layer of custom regex-based rules covers the vendor-specific constructs that a generic parser maps imperfectly.',
-    ],
-    challenge:
-      'Migration projects stalled on the manual rewrite of hundreds of vendor-specific queries between SQL dialects.',
-    approach: [
-      {
-        title: 'AST-based translation',
-        text: 'SqlGlot parses source SQL into an abstract syntax tree and regenerates it in the target dialect.',
+
+    media: {
+      thumb: { src: '/projects_data/n8n/blog_overall_view.png', width: 1844, height: 916 },
+
+      video: {
+        src: '/projects_data/n8n/walkthrough.mp4',
+        poster: '/projects_data/n8n/walkthrough-poster.jpg',
+        width: 1440,
+        height: 746,
+        length: '2 min',
+        title: 'One run, start to finish',
+        caption:
+          'The workflow executing live — Gmail trigger through extraction, sanitising and GPT generation to publish and notify — then a look inside the code nodes at the JSON going in and coming out. No audio.',
       },
-      {
-        title: 'Custom rule layer',
-        text: 'Regex-based transformation rules handle vendor-specific functions and syntax the generic parser maps imperfectly.',
-      },
-      {
-        title: 'Four-dialect coverage',
-        text: 'Bidirectional conversion across MySQL, MSSQL, PostgreSQL and Oracle.',
-      },
-    ],
-    results: [
-      { value: '4', label: 'SQL Dialects' },
-      { value: 'AST', label: 'Based Translation' },
-      { value: '2mo', label: 'Delivery Time' },
-    ],
-    stack: ['Python', 'SqlGlot', 'Regular Expressions'],
+      shots: [
+        {
+          src: '/projects_data/n8n/blog_overall_view.png',
+          width: 1844,
+          height: 916,
+          span: 'full',
+          title: 'The whole flow',
+          caption:
+            'Schedule Trigger → Gmail → label as Processing → Text Extraction → Sanitize → Generate Blog Post → Login → Create Blog → Get Manager and Invitee → notify, with every node routing its Error branch into "Add To Blogs (Error)" so a failed item lands somewhere recoverable instead of vanishing.',
+        },
+        {
+          src: '/projects_data/n8n/javascript_text_extraction.png',
+          width: 1831,
+          height: 903,
+          title: 'Text extraction',
+          caption:
+            'The code node that pulls subject, body and binary attachments off each Gmail message and flattens 50 items into one predictable shape — raw message JSON on the left, the extracted schema on the right.',
+        },
+        {
+          src: '/projects_data/n8n/javascript_to_clean.png',
+          width: 1831,
+          height: 903,
+          title: 'Sanitising the body',
+          caption:
+            'Forwarded mail arrives as HTML with encoded entities, so this step strips tags and decodes them before anything reaches the model. Note the split Success / Error branches on the output.',
+        },
+        {
+          src: '/projects_data/n8n/content_of_email.png',
+          width: 1803,
+          height: 885,
+          /* full width so the third half-shot isn't left alone on a row —
+             and the in/out tables here need the room to be readable */
+          span: 'full',
+          title: 'State tracking by Gmail label',
+          caption:
+            'There is no database behind this — the Gmail labels are the state machine. This node stamps each message as Blogs (Processing) via {{ $json.id }}, and later steps move it to Processed or Error, which is what makes a re-run safe.',
+        },
+      ],
+    },
   },
 ];
 
@@ -721,7 +1043,7 @@ export const navigation = [
       { label: 'Projects', to: '/projects' },
       { label: 'Project Details', to: '/projects/datafuseai' },
       { label: 'FAQ', to: '/faq' },
-      { label: '404 Page', to: '/404' },
+      // { label: '404 Page', to: '/404' },
     ],
   },
   { label: 'Contact', to: '/contact' },

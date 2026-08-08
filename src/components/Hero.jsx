@@ -5,6 +5,12 @@ import { Download, Play } from './Icons';
 import { socialIcon } from './socialIcon';
 import VideoModal from './VideoModal';
 
+/**
+ * Where each social link sits on the arc, in degrees (0° = due right, up = -).
+ * Kept inside the drawn segment (±52°) so every icon lands on the visible line.
+ */
+const ORBIT_ANGLES = [-34, -17, 0, 17, 34];
+
 export default function Hero() {
   const [video, setVideo] = useState(false);
 
@@ -52,27 +58,43 @@ export default function Hero() {
           </div>
 
           <div className="hero__figure">
-            <div className="hero__orbit" aria-hidden="true" />
-
-            <div className="hero__portrait-frame">
-              <img
-                className="hero__portrait"
-                src="/images/portrait.png"
-                alt={`${profile.name}, ${profile.role}`}
-                width="1024"
-                height="1536"
-                fetchPriority="high"
-              />
+            {/* The ring and the social links share one circle: each link is
+                placed at `angle` degrees on it, so the drawn line passes
+                exactly through every icon. 0° is due right, negative is up. */}
+            <div className="hero__orbit">
+              <svg className="hero__orbit-line" viewBox="0 0 100 100" aria-hidden="true">
+                {/* Only the right-hand segment of the circle is drawn, so the
+                    curve stays beside the portrait instead of sweeping back
+                    across the headline. Endpoints sit just past the outermost
+                    links (±42° here, links at ±34°). */}
+                <path d="M87.16 16.54 A50 50 0 0 1 87.16 83.46" />
+                <path className="orbit-inner" d="M77.43 19.53 A41 41 0 0 1 77.43 80.47" />
+              </svg>
             </div>
 
+            <img
+              className="hero__portrait"
+              src="/images/portrait.png"
+              alt={`${profile.name}, ${profile.role}`}
+              width="1100"
+              height="1657"
+              fetchPriority="high"
+            />
+
             <div className="hero__socials">
-              {socials.map((s) => {
+              {socials.map((s, i) => {
                 const Icon = socialIcon(s.icon);
+                const rad = ((ORBIT_ANGLES[i] ?? 0) * Math.PI) / 180;
+
                 return (
                   <a
                     key={s.name}
                     href={s.url}
                     className="orbit-link"
+                    style={{
+                      left: `${50 + 50 * Math.cos(rad)}%`,
+                      top: `${50 + 50 * Math.sin(rad)}%`,
+                    }}
                     target={s.url.startsWith('http') ? '_blank' : undefined}
                     rel="noreferrer"
                     aria-label={s.name}

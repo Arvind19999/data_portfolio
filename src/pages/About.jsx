@@ -3,13 +3,14 @@ import { Link } from 'react-router-dom';
 import Banner from '../components/Banner';
 import Counters from '../components/Counters';
 import { Download, DoubleChevron } from '../components/Icons';
+import Resume from '../components/Resume';
 import Reveal from '../components/Reveal';
 import SectionHead from '../components/SectionHead';
 import SkillBars from '../components/SkillBars';
 import Slider from '../components/Slider';
 import { QuoteCard } from '../components/Cards';
 import { usePageMeta } from '../hooks/usePageMeta';
-import { education, experience, profile, techStack, testimonials } from '../data/site';
+import { profile, techStack, testimonials } from '../data/site';
 
 export default function About() {
   usePageMeta('About', profile.intro);
@@ -22,26 +23,20 @@ export default function About() {
       <section className="section">
         <div className="arcs" />
         <div className="container">
-          <div className="skills__grid">
-            <Reveal>
-              <div
-                style={{
-                  borderRadius: 'var(--r-md)',
-                  overflow: 'hidden',
-                  border: '1px solid var(--line)',
-                }}
-              >
-                <img
-                  src="/images/about.png"
-                  alt={`${profile.name} at work`}
-                  width="1120"
-                  height="1456"
-                  loading="lazy"
-                />
-              </div>
+          <div className="about-intro">
+            {/* A cut-out with a real alpha channel, so it sits straight on the
+                page background with no card around it — see `.about-intro`. */}
+            <Reveal className="about-intro__media">
+              <img
+                src="/images/about.webp"
+                alt={`${profile.name} at work`}
+                width="1100"
+                height="1164"
+                loading="lazy"
+              />
             </Reveal>
 
-            <Reveal delay={120}>
+            <Reveal delay={120} className="about-intro__copy">
               <span className="sec-label">About Me</span>
               <h2>Turning Raw Data Into Systems You Can Trust.</h2>
 
@@ -50,41 +45,37 @@ export default function About() {
                   {para}
                 </p>
               ))}
-
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-                  gap: 24,
-                  margin: '34px 0',
-                  paddingTop: 26,
-                  borderTop: '1px solid var(--line-soft)',
-                }}
-              >
-                {[
-                  ['Experience', `${profile.experienceYears} Years`],
-                  ['Location', profile.location],
-                  ['Availability', profile.availability],
-                ].map(([label, value]) => (
-                  <div key={label}>
-                    <div className="info-card__label">{label}</div>
-                    <div className="info-card__value">{value}</div>
-                  </div>
-                ))}
-              </div>
-
-              <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-                <a className="btn" href={profile.resume} download>
-                  <span>Download CV</span>
-                  <Download className="btn__icon" />
-                </a>
-                <Link to="/contact" className="btn">
-                  <span>Hire Me</span>
-                  <DoubleChevron className="btn__icon" />
-                </Link>
-              </div>
             </Reveal>
           </div>
+
+          {/* The facts and the buttons run the full width underneath. Kept
+              inside the copy column they made it half again as tall as the
+              photo, which left the photo stranded in the middle of the row. */}
+          <Reveal className="about-facts" delay={60}>
+            <div className="about-facts__list">
+              {[
+                ['Experience', `${profile.experienceYears} Years`],
+                ['Location', profile.location],
+                ['Availability', profile.availability],
+              ].map(([label, value]) => (
+                <div key={label}>
+                  <div className="info-card__label">{label}</div>
+                  <div className="info-card__value">{value}</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="about-facts__actions">
+              <a className="btn" href={profile.resume} download>
+                <span>Download CV</span>
+                <Download className="btn__icon" />
+              </a>
+              <Link to="/contact" className="btn">
+                <span>Hire Me</span>
+                <DoubleChevron className="btn__icon" />
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -97,56 +88,20 @@ export default function About() {
         </div>
       </section>
 
-      {/* Experience ----------------------------------------------------- */}
+      {/* Resume — experience and education behind one pair of tabs ------- */}
       <section className="section">
         <div className="arcs" />
         <div className="container">
-          <SectionHead label="Career" title="Experience" />
+          <SectionHead label="Resume" title="Where I Have Worked And Studied." />
 
-          <div className="tl">
-            {experience.map((item, i) => (
-              <Reveal className="tl__item" key={item.org} delay={i * 90}>
-                <div className="tl__period">{item.period}</div>
-                <div>
-                  <h3 className="tl__title">{item.title}</h3>
-                  <div className="tl__org">
-                    {item.org} — {item.location}
-                  </div>
-                  <ul className="tl__points">
-                    {item.points.map((p) => (
-                      <li key={p.slice(0, 40)}>{p}</li>
-                    ))}
-                  </ul>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Education ------------------------------------------------------ */}
-      <section className="section section--alt">
-        <div className="arcs" />
-        <div className="container">
-          <SectionHead label="Academics" title="Education" />
-
-          <div className="tl">
-            {education.map((item, i) => (
-              <Reveal className="tl__item" key={item.title} delay={i * 80}>
-                <div className="tl__period">{item.period}</div>
-                <div>
-                  <h3 className="tl__title">{item.title}</h3>
-                  <div className="tl__org">{item.org}</div>
-                  <p style={{ margin: 0, fontSize: '0.9rem' }}>{item.note}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
+          <Reveal>
+            <Resume />
+          </Reveal>
         </div>
       </section>
 
       {/* Skills + stack ------------------------------------------------- */}
-      <section className="section">
+      <section className="section section--alt">
         <div className="arcs" />
         <div className="container">
           <div className="skills__grid">
@@ -184,7 +139,7 @@ export default function About() {
       </section>
 
       {/* Testimonials --------------------------------------------------- */}
-      <section className="section section--alt">
+      <section className="section">
         <div className="arcs" />
         <div className="container">
           <SectionHead center label="Testimonials" title="What People Say." />

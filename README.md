@@ -53,16 +53,97 @@ responsive down to 390px · `prefers-reduced-motion` support.
 
 ## Assets
 
-- `public/images/portrait.png` — hero portrait
-- `public/images/about.png` — About page image
+- `public/images/portrait.png` — hero portrait, a transparent-background cut-out
+- `public/images/about.webp` — About page cut-out, with a real alpha channel so
+  it sits straight on the page background. WebP because the same cut-out is
+  1.2MB as a PNG and 117KB here. Its desk runs to the frame on three sides, so
+  `.about-intro__media img` fades those edges rather than letting them stop dead.
 - `public/files/Arbind_Sah_Resume.pdf` — served by every "Get Resume" button
+- `public/projects_data/<project>/` — screenshots and walkthrough video per project
+- `assets_src/` — original, uncompressed captures. **Not served**; kept out of
+  `public/` so `npm run build` doesn't ship them.
 
-Replacing the portrait: the hero frames it in an arch that fades into the page
-background (`.hero__portrait-frame` in `src/index.css`). If you swap in a PNG
-with a transparent background, drop the `::after` gradient and the
-`object-fit`/`filter` rules for a true cut-out.
+### Project screenshots and video
+
+A project in `src/data/site.js` can carry an optional `media` block:
+
+```js
+media: {
+  thumb: { src, width, height, position },
+  video: { src, poster, width, height, length, title, caption },
+  diagram: 'migration-flow',
+  shots: [{ src, width, height, span, title, caption }],
+}
+```
+
+- `thumb` replaces the generated artwork on the project cards (grid and Home).
+  Cards crop to 16/11, so pick a shot whose subject sits in the middle — or set
+  `position` (any CSS `object-position`) to steer the crop.
+- With a `video`, the detail page uses it as the hero instead of the generated
+  artwork. Nothing of the file downloads until the poster is clicked — the
+  `<video>` element is not mounted before then. A portrait or stacked recording
+  is held to 620px wide automatically, otherwise it would swallow the page.
+- `diagram` fills the hero when there is no video, naming a hand-drawn SVG from
+  the registry in `src/components/ProjectDiagram.jsx`. Use it when the project
+  has no screen worth recording but does have a shape worth showing. SVG text
+  does not wrap, so the strings inside are sized to their boxes — lengthening
+  one runs it past the border. Drawings, not captures: label them honestly.
+- `shots` render below the write-up at full container width; `span: 'full'`
+  gives a shot the whole row, anything else pairs two across. Clicking one
+  opens the lightbox (arrow keys to step, Escape to close).
+- Always set `width`/`height` to the file's real pixel size — that is what
+  reserves the space and stops the page jumping as images load.
+
+Prepare a new recording the same way:
+
+```bash
+# web copy — 1440px wide, 30fps, no audio track; typically ~85% smaller
+ffmpeg -i original.mp4 -vf "scale=1440:-2,fps=30" -c:v libx264 -crf 28 \
+  -preset veryfast -pix_fmt yuv420p -movflags +faststart -an walkthrough.mp4
+
+# poster frame
+ffmpeg -ss 70 -i original.mp4 -frames:v 1 -vf scale=1440:-2 -q:v 4 \
+  walkthrough-poster.jpg
+```
+
+Crop screenshots down to their content before adding them — a capture with a
+large empty margin reads as a grey slab on the dark page. **Crop off the
+browser chrome too**: the URL bar and bookmarks bar expose personal links and
+have nothing to do with the work. Same for any query result grid — a notebook
+`display()` is live production data, so the rows underneath it are real names,
+emails and password hashes.
+
+```bash
+ffmpeg -i raw.png -vf "crop=1852:928:0:74" screen.png    # drop the top 74px
+```
+
+Save photo-heavy screens as JPEG (`-q:v 3`) and flat UI screens as PNG — the
+same capture can be 4× larger in the wrong format.
+
+Replacing the portrait or the About cut-out: use a **real alpha channel**.
+Exports from background-remover previews often bake the grey checkerboard into
+the pixels instead — that renders as a visible checkerboard on the page, and it
+cannot be undone cleanly once the original mask is gone. The About image was
+recovered from one of these, but only because its white objects (the mug, the
+notepad) could be ruled back in by hand; ask for the transparent export first. Size it around
+1100px wide; the hero scales it and adds a drop shadow plus a soft fade at the
+bottom edge (`.hero__portrait` in `src/index.css`).
+
+### The hero social ring
+
+`.hero__orbit` (the drawn circle) and `.hero__socials` (the links) are
+**siblings sharing identical geometry**, and each link is placed at an angle
+from `ORBIT_ANGLES` in `src/components/Hero.jsx` — so the line always threads
+exactly through every icon, however many you have. Add or remove entries in
+`socials` and add a matching angle (0° is due right, negative is upward).
+
+They have to stay siblings: the centring `transform` creates a stacking
+context, so nesting the links inside the ring hides them behind the portrait.
 
 ## Things wired to placeholders
+
+The Facebook and Fiverr entries in `socials` (`src/data/site.js`) point at
+placeholder URLs — replace them with your real profile and gig links.
 
 Three spots have no backend and are marked with comments in the source:
 
