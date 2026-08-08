@@ -54,7 +54,10 @@ responsive down to 390px · `prefers-reduced-motion` support.
 ## Assets
 
 - `public/images/portrait.png` — hero portrait, a transparent-background cut-out
-- `public/images/about.png` — About page image
+- `public/images/about.jpg` — About page photo, on a white studio background.
+  It is cropped to the height of the copy beside it, so keep the subject
+  centred. The original was a background-remover *preview* export with the grey
+  checkerboard painted into its pixels; `assets_src/images/` keeps that copy.
 - `public/files/Arbind_Sah_Resume.pdf` — served by every "Get Resume" button
 - `public/projects_data/<project>/` — screenshots and walkthrough video per project
 - `assets_src/` — original, uncompressed captures. **Not served**; kept out of

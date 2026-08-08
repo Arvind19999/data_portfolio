@@ -23,23 +23,18 @@ export default function About() {
       <section className="section">
         <div className="arcs" />
         <div className="container">
-          <div className="skills__grid">
-            <Reveal>
-              <div
-                style={{
-                  borderRadius: 'var(--r-md)',
-                  overflow: 'hidden',
-                  border: '1px solid var(--line)',
-                }}
-              >
-                <img
-                  src="/images/about.png"
-                  alt={`${profile.name} at work`}
-                  width="1120"
-                  height="1456"
-                  loading="lazy"
-                />
-              </div>
+          <div className="about-intro">
+            {/* The photo has a white studio background, so it sits in a light
+                card rather than bleeding into the dark page. It takes its
+                height from the copy beside it — see `.about-intro`. */}
+            <Reveal className="about-intro__media">
+              <img
+                src="/images/about.jpg"
+                alt={`${profile.name} at work`}
+                width="1100"
+                height="1243"
+                loading="lazy"
+              />
             </Reveal>
 
             <Reveal delay={120}>

@@ -1037,6 +1037,38 @@ ul {
   align-items: center;
 }
 
+/* About intro: photo beside the copy, both ending on the same line.
+   `stretch` is what does the fitting — the card takes the row height set by the
+   copy and the photo crops into it, rather than the photo setting the height
+   itself, which is what made it tower over the text. */
+.about-intro {
+  display: grid;
+  grid-template-columns: 0.95fr 1.15fr;
+  gap: 70px;
+  align-items: stretch;
+}
+
+/* The photo's background is white, so this is a light panel by design. Slightly
+   off-white — pure #fff glares against the rest of the page. */
+.about-intro__media {
+  display: grid;
+  min-height: 470px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: #f3f3f6;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
+}
+
+.about-intro__media img {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: block;
+  object-fit: cover;
+  object-position: center top;
+}
+
 .bar + .bar {
   margin-top: 34px;
 }
@@ -2866,10 +2898,17 @@ ul {
   }
 
   .skills__grid,
+  .about-intro,
   .pd-grid,
   .contact-grid {
     grid-template-columns: 1fr;
     gap: 46px;
+  }
+
+  /* Stacked, there is no copy to take a height from, so the card sets its own. */
+  .about-intro__media {
+    min-height: 0;
+    aspect-ratio: 4 / 5;
   }
 
   .info-card {
