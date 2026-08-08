@@ -1218,39 +1218,120 @@ ul {
    Timeline (education / experience)
    ========================================================================== */
 
-.tl {
-  position: relative;
-  padding-left: 0;
-}
+/* Experience and education share one tabbed block — see Resume.jsx. */
 
-.tl__item {
+.resume__tabs {
   display: grid;
-  grid-template-columns: 150px 1fr;
-  gap: 34px;
-  padding: 34px 0;
-  border-bottom: 1px solid var(--line-soft);
+  grid-template-columns: 1fr 1fr;
+  gap: 26px;
+  margin-bottom: 74px;
 }
 
-.tl__item:last-child {
-  border-bottom: 0;
+.resume__tab {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3.6vw, 3rem);
+  line-height: 1.2;
+  color: var(--muted);
+  background: var(--bg-alt);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 28px 22px;
+  cursor: pointer;
+  transition:
+    background 0.35s var(--ease),
+    border-color 0.35s var(--ease),
+    color 0.35s var(--ease);
 }
 
-.tl__period {
-  font-size: 0.86rem;
-  color: var(--muted-dim);
-  padding-top: 6px;
+.resume__tab:hover {
+  color: var(--text);
+  background: var(--card-hover);
+}
+
+.resume__tab.is-active {
+  color: var(--text);
+  background: var(--card);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.resume__panel {
+  animation: resume-in 0.5s var(--ease) both;
+}
+
+@keyframes resume-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+.resume__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.resume__item {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 72px;
+}
+
+/* The year cells stack flush so their side borders read as one continuous
+   column down the page; only the ends need capping. */
+.resume__year {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  text-align: right;
+  padding: 54px 30px;
+  border-left: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  font-size: 0.92rem;
+  color: var(--muted);
   letter-spacing: 0.02em;
 }
 
-.tl__title {
-  font-size: 1.32rem;
-  margin-bottom: 6px;
+.resume__item:first-child .resume__year {
+  border-top: 1px solid var(--line);
 }
 
-.tl__org {
-  font-size: 0.9rem;
+.resume__item:last-child .resume__year {
+  border-bottom: 1px solid var(--line);
+}
+
+/* A brighter notch punched through the column border, level with each row. */
+.resume__year::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -1px;
+  width: 1px;
+  height: 46px;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.resume__body {
+  padding: 54px 0;
+}
+
+.resume__title {
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+}
+
+.resume__org {
+  font-size: 0.92rem;
   color: var(--muted);
-  margin-bottom: 14px;
+  margin-bottom: 18px;
+}
+
+.resume__note {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--muted);
 }
 
 .tl__points li {
@@ -2821,6 +2902,33 @@ ul {
     padding: 78px 0;
   }
 
+  /* The bordered year column has nowhere to go at this width, so each date
+     becomes a boxed label above its entry instead. */
+  .resume__item {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .resume__list li + li {
+    margin-top: 38px;
+  }
+
+  .resume__year {
+    justify-content: flex-start;
+    text-align: left;
+    padding: 14px 20px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+  }
+
+  .resume__year::after {
+    display: none;
+  }
+
+  .resume__body {
+    padding: 0;
+  }
+
   /* Scaling the 1200-unit canvas below this puts the labels under 10px, so the
      diagram holds a readable width and the wrapper scrolls instead. */
   .mig {
@@ -2868,11 +2976,6 @@ ul {
     grid-template-columns: 1fr;
   }
 
-  .tl__item {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
   .acc__panel p {
     padding-right: 10px;
   }
@@ -2896,6 +2999,17 @@ ul {
 @media (max-width: 620px) {
   :root {
     --gutter: 18px;
+  }
+
+  /* Two display-size tabs no longer fit side by side here. */
+  .resume__tabs {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 52px;
+  }
+
+  .resume__tab {
+    padding: 20px;
   }
 
   .svc-grid {

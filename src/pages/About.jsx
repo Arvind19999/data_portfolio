@@ -3,13 +3,14 @@ import { Link } from 'react-router-dom';
 import Banner from '../components/Banner';
 import Counters from '../components/Counters';
 import { Download, DoubleChevron } from '../components/Icons';
+import Resume from '../components/Resume';
 import Reveal from '../components/Reveal';
 import SectionHead from '../components/SectionHead';
 import SkillBars from '../components/SkillBars';
 import Slider from '../components/Slider';
 import { QuoteCard } from '../components/Cards';
 import { usePageMeta } from '../hooks/usePageMeta';
-import { education, experience, profile, techStack, testimonials } from '../data/site';
+import { profile, techStack, testimonials } from '../data/site';
 
 export default function About() {
   usePageMeta('About', profile.intro);
@@ -97,56 +98,20 @@ export default function About() {
         </div>
       </section>
 
-      {/* Experience ----------------------------------------------------- */}
+      {/* Resume — experience and education behind one pair of tabs ------- */}
       <section className="section">
         <div className="arcs" />
         <div className="container">
-          <SectionHead label="Career" title="Experience" />
+          <SectionHead label="Resume" title="Where I Have Worked And Studied." />
 
-          <div className="tl">
-            {experience.map((item, i) => (
-              <Reveal className="tl__item" key={item.org} delay={i * 90}>
-                <div className="tl__period">{item.period}</div>
-                <div>
-                  <h3 className="tl__title">{item.title}</h3>
-                  <div className="tl__org">
-                    {item.org} — {item.location}
-                  </div>
-                  <ul className="tl__points">
-                    {item.points.map((p) => (
-                      <li key={p.slice(0, 40)}>{p}</li>
-                    ))}
-                  </ul>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Education ------------------------------------------------------ */}
-      <section className="section section--alt">
-        <div className="arcs" />
-        <div className="container">
-          <SectionHead label="Academics" title="Education" />
-
-          <div className="tl">
-            {education.map((item, i) => (
-              <Reveal className="tl__item" key={item.title} delay={i * 80}>
-                <div className="tl__period">{item.period}</div>
-                <div>
-                  <h3 className="tl__title">{item.title}</h3>
-                  <div className="tl__org">{item.org}</div>
-                  <p style={{ margin: 0, fontSize: '0.9rem' }}>{item.note}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
+          <Reveal>
+            <Resume />
+          </Reveal>
         </div>
       </section>
 
       {/* Skills + stack ------------------------------------------------- */}
-      <section className="section">
+      <section className="section section--alt">
         <div className="arcs" />
         <div className="container">
           <div className="skills__grid">
@@ -184,7 +149,7 @@ export default function About() {
       </section>
 
       {/* Testimonials --------------------------------------------------- */}
-      <section className="section section--alt">
+      <section className="section">
         <div className="arcs" />
         <div className="container">
           <SectionHead center label="Testimonials" title="What People Say." />
