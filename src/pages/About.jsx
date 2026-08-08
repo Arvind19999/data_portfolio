@@ -36,7 +36,7 @@ export default function About() {
               />
             </Reveal>
 
-            <Reveal delay={120}>
+            <Reveal delay={120} className="about-intro__copy">
               <span className="sec-label">About Me</span>
               <h2>Turning Raw Data Into Systems You Can Trust.</h2>
 
@@ -45,41 +45,37 @@ export default function About() {
                   {para}
                 </p>
               ))}
-
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-                  gap: 24,
-                  margin: '34px 0',
-                  paddingTop: 26,
-                  borderTop: '1px solid var(--line-soft)',
-                }}
-              >
-                {[
-                  ['Experience', `${profile.experienceYears} Years`],
-                  ['Location', profile.location],
-                  ['Availability', profile.availability],
-                ].map(([label, value]) => (
-                  <div key={label}>
-                    <div className="info-card__label">{label}</div>
-                    <div className="info-card__value">{value}</div>
-                  </div>
-                ))}
-              </div>
-
-              <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-                <a className="btn" href={profile.resume} download>
-                  <span>Download CV</span>
-                  <Download className="btn__icon" />
-                </a>
-                <Link to="/contact" className="btn">
-                  <span>Hire Me</span>
-                  <DoubleChevron className="btn__icon" />
-                </Link>
-              </div>
             </Reveal>
           </div>
+
+          {/* The facts and the buttons run the full width underneath. Kept
+              inside the copy column they made it half again as tall as the
+              photo, which left the photo stranded in the middle of the row. */}
+          <Reveal className="about-facts" delay={60}>
+            <div className="about-facts__list">
+              {[
+                ['Experience', `${profile.experienceYears} Years`],
+                ['Location', profile.location],
+                ['Availability', profile.availability],
+              ].map(([label, value]) => (
+                <div key={label}>
+                  <div className="info-card__label">{label}</div>
+                  <div className="info-card__value">{value}</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="about-facts__actions">
+              <a className="btn" href={profile.resume} download>
+                <span>Download CV</span>
+                <Download className="btn__icon" />
+              </a>
+              <Link to="/contact" className="btn">
+                <span>Hire Me</span>
+                <DoubleChevron className="btn__icon" />
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
 

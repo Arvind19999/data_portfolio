@@ -1043,7 +1043,7 @@ export const navigation = [
       { label: 'Projects', to: '/projects' },
       { label: 'Project Details', to: '/projects/datafuseai' },
       { label: 'FAQ', to: '/faq' },
-      { label: '404 Page', to: '/404' },
+      // { label: '404 Page', to: '/404' },
     ],
   },
   { label: 'Contact', to: '/contact' },
