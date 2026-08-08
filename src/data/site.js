@@ -386,56 +386,210 @@ export const projects = [
     },
   },
   {
-    slug: 'text-to-sql-engine',
-    title: 'Text-to-SQL Engine',
-    category: 'LLM / SqlGlot / Redis',
-    tags: ['LLM', 'SqlGlot', 'Redis'],
+    slug: 'blogs-automation-flow',
+    title: 'Blogs Automation Flow',
+    category: 'n8n / OpenAI / REST APIs',
+    tags: ['n8n', 'OpenAI', 'Automation'],
     year: '2025',
-    client: 'Internal R&D',
-    duration: '4 months',
-    date: 'Mar 2025',
-    accent: '#4fd1c5',
+    client: 'Internal Tooling',
+    duration: '6 weeks',
+    date: 'Feb 2025',
+    accent: '#f687b3',
     summary:
-      'Natural-language questions converted into validated, dialect-correct SQL by a locally hosted LLM — with no query data leaving the environment.',
+      'An end-to-end n8n workflow that ingests blog content from Gmail, generates structured posts with GPT, and publishes them automatically.',
     overview: [
-      'The premise: analysts should be able to ask a question in English and get SQL they can trust. The constraint: nothing about the schema or the query could leave the network, which ruled out hosted model APIs.',
-      'Running a local model made generation cheap but unreliable, so the interesting engineering went into validation — three independent layers that catch a bad query before it ever touches the database, and feed the failure back to the model to correct itself.',
+      'A content pipeline that starts in an inbox and ends with a published post and a notified stakeholder, with no human step in between.',
+      'The engineering value is in the state machine: every item is tracked through Processing → Processed/Error using label-based Gmail folders, so a re-run never duplicates work and a failure is recoverable rather than silent.',
     ],
     challenge:
-      'LLMs produce plausible SQL that is subtly wrong — wrong dialect, hallucinated columns, or a destructive statement dressed up as a question.',
+      'Blog content arrived by email in inconsistent formats and had to be published reliably without duplicate posts on re-runs.',
     approach: [
       {
-        title: 'Local-only inference',
-        text: 'Ollama running DeepSeek-Coder-v2 16B, so schema and query data never leave the environment.',
+        title: 'Ingest and deduplicate',
+        text: 'Gmail-triggered ingestion that deduplicates against a processing log and extracts/sanitizes raw text.',
       },
       {
-        title: 'Three-layer validation with self-correction',
-        text: 'A read-only keyword guard blocking 20 write/DDL operations, sqlglot AST parsing per dialect, and live EXPLAIN validation via SQLAlchemy. Failed SQL and its error are fed back to the model for up to 3 correction attempts.',
+        title: 'LLM content generation',
+        text: 'OpenAI GPT generates structured blog content from sanitized input, with the output parsed into validated JSON.',
       },
       {
-        title: 'Depth-limited schema extraction',
-        text: 'Rather than sending the whole database to the model, the engine walks foreign-key relationships outward from a chosen table to a bounded depth.',
+        title: 'API orchestration',
+        text: 'Sequenced REST calls for login, blog creation and manager/invitee lookup, publishing content and notifying stakeholders via Gmail.',
       },
       {
-        title: 'Two-tier schema and session store',
-        text: 'Redis as a hot cache with TTL, PostgreSQL as durable backup that automatically repopulates Redis on cache miss or restart. Multi-turn session context resolves follow-ups against previous turns.',
+        title: 'State tracking',
+        text: 'Label-based Gmail folders track Processing → Processed/Error to prevent duplicate runs and support failure recovery.',
       },
     ],
     results: [
-      { value: '14', label: 'SQL Dialects Supported' },
-      { value: '26', label: 'Database Drivers' },
-      { value: '3', label: 'Validation Layers' },
+      { value: '100%', label: 'Hands-Off Publishing' },
+      { value: '0', label: 'Duplicate Posts' },
+      { value: '3', label: 'Pipeline States' },
+    ],
+    stack: ['n8n', 'Gmail API', 'OpenAI API', 'REST APIs', 'JSON'],
+
+    media: {
+      thumb: { src: '/projects_data/n8n/blog_overall_view.png', width: 1844, height: 916 },
+
+      video: {
+        src: '/projects_data/n8n/walkthrough.mp4',
+        poster: '/projects_data/n8n/walkthrough-poster.jpg',
+        width: 1440,
+        height: 746,
+        length: '2 min',
+        title: 'One run, start to finish',
+        caption:
+          'The workflow executing live — Gmail trigger through extraction, sanitising and GPT generation to publish and notify — then a look inside the code nodes at the JSON going in and coming out. No audio.',
+      },
+      shots: [
+        {
+          src: '/projects_data/n8n/blog_overall_view.png',
+          width: 1844,
+          height: 916,
+          span: 'full',
+          title: 'The whole flow',
+          caption:
+            'Schedule Trigger → Gmail → label as Processing → Text Extraction → Sanitize → Generate Blog Post → Login → Create Blog → Get Manager and Invitee → notify, with every node routing its Error branch into "Add To Blogs (Error)" so a failed item lands somewhere recoverable instead of vanishing.',
+        },
+        {
+          src: '/projects_data/n8n/javascript_text_extraction.png',
+          width: 1831,
+          height: 903,
+          title: 'Text extraction',
+          caption:
+            'The code node that pulls subject, body and binary attachments off each Gmail message and flattens 50 items into one predictable shape — raw message JSON on the left, the extracted schema on the right.',
+        },
+        {
+          src: '/projects_data/n8n/javascript_to_clean.png',
+          width: 1831,
+          height: 903,
+          title: 'Sanitising the body',
+          caption:
+            'Forwarded mail arrives as HTML with encoded entities, so this step strips tags and decodes them before anything reaches the model. Note the split Success / Error branches on the output.',
+        },
+        {
+          src: '/projects_data/n8n/content_of_email.png',
+          width: 1803,
+          height: 885,
+          /* full width so the third half-shot isn't left alone on a row —
+             and the in/out tables here need the room to be readable */
+          span: 'full',
+          title: 'State tracking by Gmail label',
+          caption:
+            'There is no database behind this — the Gmail labels are the state machine. This node stamps each message as Blogs (Processing) via {{ $json.id }}, and later steps move it to Processed or Error, which is what makes a re-run safe.',
+        },
+      ],
+    },
+  },
+  {
+    slug: 'yachtchartersuite',
+    title: 'YachtCharterSuite — Charter Management',
+    category: 'Grails / Elasticsearch / AWS',
+    tags: ['Grails', 'Elasticsearch', 'AWS Lambda'],
+    year: '2024 – Ongoing',
+    client: 'Azminds Services Pvt. Ltd.',
+    duration: 'Ongoing',
+    date: 'May 2024',
+    accent: '#68d391',
+    summary:
+      'A charter management platform with full-text yacht search, an AI chatbot, and an async multi-site scraper running on Lambda.',
+    overview: [
+      'YachtCharterSuite handles the operational side of charter management — yachts, bookings, crew profiles, collaboration, payments with installment support and expense tracking, built on Grails/GORM with Spring Security.',
+      'The data engineering work sat underneath: an Elasticsearch layer powering both full-text search and an AI chatbot that resolves queries about offers, availability and booking status, plus a scraper that keeps listing data current.',
+    ],
+    challenge:
+      'Charter listings live across many operator sites in inconsistent formats, and users expect to search all of them as one catalogue.',
+    approach: [
+      {
+        title: 'Async multi-site scraper',
+        text: 'Playwright-based scraper deployed to AWS Lambda in a Docker image, processing thousands of listings with OpenAI Batch API normalization.',
+      },
+      {
+        title: 'Elasticsearch search layer',
+        text: 'Full-text yacht search with an AI-powered chatbot resolving offer, availability and booking-status queries.',
+      },
+      {
+        title: 'Media and payments',
+        text: 'S3 presigned URL uploads, gallery management, installment-aware payment tracking and expense management.',
+      },
+      {
+        title: 'Tiered packages',
+        text: 'Anchor (3 yachts), Harbour (5 yachts), Regatta (10 yachts) and Admiral (unlimited) subscription tiers.',
+      },
+    ],
+    results: [
+      { value: '1000s', label: 'Listings Processed' },
+      { value: '4', label: 'Subscription Tiers' },
+      { value: 'AI', label: 'Chatbot Search' },
     ],
     stack: [
-      'Python',
-      'Ollama',
-      'DeepSeek-Coder-v2',
-      'SqlGlot',
-      'SQLAlchemy',
-      'Redis',
+      'Grails',
+      'Groovy',
       'PostgreSQL',
-      'Docker',
+      'Elasticsearch',
+      'AWS S3',
+      'AWS Lambda',
+      'PySpark',
+      'OpenAI API',
     ],
+
+    media: {
+      thumb: { src: '/projects_data/ycs/browse-fleet.jpg', width: 1852, height: 928 },
+
+      video: {
+        src: '/projects_data/ycs/walkthrough.mp4',
+        poster: '/projects_data/ycs/walkthrough-poster.jpg',
+        width: 1440,
+        height: 722,
+        length: '3 min',
+        title: 'A tour of the platform',
+        caption:
+          'Operator dashboard through the searchable fleet catalogue and into a single yacht — pricing, gallery and brochure — showing how the scraped listings and the operator-managed ones sit in one place. No audio.',
+      },
+      shots: [
+        {
+          src: '/projects_data/ycs/browse-fleet.jpg',
+          width: 1852,
+          height: 928,
+          span: 'full',
+          title: 'Browsing 2,271 yachts',
+          caption:
+            'The Elasticsearch layer from the user\'s side — the scraped catalogue filtered by region, dates, guests, yacht type, length and price, each card expandable into availability, pricing and offers without leaving the results.',
+        },
+        {
+          src: '/projects_data/ycs/dashboard.png',
+          width: 1852,
+          height: 928,
+          title: 'Operator dashboard',
+          caption:
+            'Revenue, occupancy rate and average booking duration against the previous year, the booking schedule with payment state per charter, and the live calendar down the right.',
+        },
+        {
+          src: '/projects_data/ycs/yacht-database.png',
+          width: 1852,
+          height: 928,
+          title: 'Managed vs scraped',
+          caption:
+            'The admin split that makes the catalogue work: 15 operator-managed yachts against 3,336 scraped ones, with a standing warning for the 945 listings still missing a contact — enquiry routing depends on it.',
+        },
+        {
+          src: '/projects_data/ycs/yacht-gallery.jpg',
+          width: 1852,
+          height: 928,
+          title: 'Media management',
+          caption:
+            'S3-backed gallery for one yacht — 33 images auto-sorted into Aerial, Exterior, Interior and Lifestyle, each re-taggable, feeding the public brochure. The progress bar tracks how complete a listing is.',
+        },
+        {
+          src: '/projects_data/ycs/life-on-deck.jpg',
+          width: 1852,
+          height: 900,
+          title: 'Life on Deck',
+          caption:
+            'Shared moments from each charter, organised per yacht and synced into the brochures — the content side that keeps a listing current once the scraper has done its part.',
+        },
+      ],
+    },
   },
   {
     slug: 'yacht-scraper',
@@ -668,211 +822,59 @@ export const projects = [
     },
   },
   {
-    slug: 'yachtchartersuite',
-    title: 'YachtCharterSuite — Charter Management',
-    category: 'Grails / Elasticsearch / AWS',
-    tags: ['Grails', 'Elasticsearch', 'AWS Lambda'],
-    year: '2024 – Ongoing',
-    client: 'Azminds Services Pvt. Ltd.',
-    duration: 'Ongoing',
-    date: 'May 2024',
-    accent: '#68d391',
+    slug: 'text-to-sql-engine',
+    title: 'Text-to-SQL Engine',
+    category: 'LLM / SqlGlot / Redis',
+    tags: ['LLM', 'SqlGlot', 'Redis'],
+    year: '2025',
+    client: 'Internal R&D',
+    duration: '4 months',
+    date: 'Mar 2025',
+    accent: '#4fd1c5',
     summary:
-      'A charter management platform with full-text yacht search, an AI chatbot, and an async multi-site scraper running on Lambda.',
+      'Natural-language questions converted into validated, dialect-correct SQL by a locally hosted LLM — with no query data leaving the environment.',
     overview: [
-      'YachtCharterSuite handles the operational side of charter management — yachts, bookings, crew profiles, collaboration, payments with installment support and expense tracking, built on Grails/GORM with Spring Security.',
-      'The data engineering work sat underneath: an Elasticsearch layer powering both full-text search and an AI chatbot that resolves queries about offers, availability and booking status, plus a scraper that keeps listing data current.',
+      'The premise: analysts should be able to ask a question in English and get SQL they can trust. The constraint: nothing about the schema or the query could leave the network, which ruled out hosted model APIs.',
+      'Running a local model made generation cheap but unreliable, so the interesting engineering went into validation — three independent layers that catch a bad query before it ever touches the database, and feed the failure back to the model to correct itself.',
     ],
     challenge:
-      'Charter listings live across many operator sites in inconsistent formats, and users expect to search all of them as one catalogue.',
+      'LLMs produce plausible SQL that is subtly wrong — wrong dialect, hallucinated columns, or a destructive statement dressed up as a question.',
     approach: [
       {
-        title: 'Async multi-site scraper',
-        text: 'Playwright-based scraper deployed to AWS Lambda in a Docker image, processing thousands of listings with OpenAI Batch API normalization.',
+        title: 'Local-only inference',
+        text: 'Ollama running DeepSeek-Coder-v2 16B, so schema and query data never leave the environment.',
       },
       {
-        title: 'Elasticsearch search layer',
-        text: 'Full-text yacht search with an AI-powered chatbot resolving offer, availability and booking-status queries.',
+        title: 'Three-layer validation with self-correction',
+        text: 'A read-only keyword guard blocking 20 write/DDL operations, sqlglot AST parsing per dialect, and live EXPLAIN validation via SQLAlchemy. Failed SQL and its error are fed back to the model for up to 3 correction attempts.',
       },
       {
-        title: 'Media and payments',
-        text: 'S3 presigned URL uploads, gallery management, installment-aware payment tracking and expense management.',
+        title: 'Depth-limited schema extraction',
+        text: 'Rather than sending the whole database to the model, the engine walks foreign-key relationships outward from a chosen table to a bounded depth.',
       },
       {
-        title: 'Tiered packages',
-        text: 'Anchor (3 yachts), Harbour (5 yachts), Regatta (10 yachts) and Admiral (unlimited) subscription tiers.',
+        title: 'Two-tier schema and session store',
+        text: 'Redis as a hot cache with TTL, PostgreSQL as durable backup that automatically repopulates Redis on cache miss or restart. Multi-turn session context resolves follow-ups against previous turns.',
       },
     ],
     results: [
-      { value: '1000s', label: 'Listings Processed' },
-      { value: '4', label: 'Subscription Tiers' },
-      { value: 'AI', label: 'Chatbot Search' },
+      { value: '14', label: 'SQL Dialects Supported' },
+      { value: '26', label: 'Database Drivers' },
+      { value: '3', label: 'Validation Layers' },
     ],
     stack: [
-      'Grails',
-      'Groovy',
+      'Python',
+      'Ollama',
+      'DeepSeek-Coder-v2',
+      'SqlGlot',
+      'SQLAlchemy',
+      'Redis',
       'PostgreSQL',
-      'Elasticsearch',
-      'AWS S3',
-      'AWS Lambda',
-      'PySpark',
-      'OpenAI API',
+      'Docker',
     ],
-
-    media: {
-      thumb: { src: '/projects_data/ycs/browse-fleet.jpg', width: 1852, height: 928 },
-
-      video: {
-        src: '/projects_data/ycs/walkthrough.mp4',
-        poster: '/projects_data/ycs/walkthrough-poster.jpg',
-        width: 1440,
-        height: 722,
-        length: '3 min',
-        title: 'A tour of the platform',
-        caption:
-          'Operator dashboard through the searchable fleet catalogue and into a single yacht — pricing, gallery and brochure — showing how the scraped listings and the operator-managed ones sit in one place. No audio.',
-      },
-      shots: [
-        {
-          src: '/projects_data/ycs/browse-fleet.jpg',
-          width: 1852,
-          height: 928,
-          span: 'full',
-          title: 'Browsing 2,271 yachts',
-          caption:
-            'The Elasticsearch layer from the user\'s side — the scraped catalogue filtered by region, dates, guests, yacht type, length and price, each card expandable into availability, pricing and offers without leaving the results.',
-        },
-        {
-          src: '/projects_data/ycs/dashboard.png',
-          width: 1852,
-          height: 928,
-          title: 'Operator dashboard',
-          caption:
-            'Revenue, occupancy rate and average booking duration against the previous year, the booking schedule with payment state per charter, and the live calendar down the right.',
-        },
-        {
-          src: '/projects_data/ycs/yacht-database.png',
-          width: 1852,
-          height: 928,
-          title: 'Managed vs scraped',
-          caption:
-            'The admin split that makes the catalogue work: 15 operator-managed yachts against 3,336 scraped ones, with a standing warning for the 945 listings still missing a contact — enquiry routing depends on it.',
-        },
-        {
-          src: '/projects_data/ycs/yacht-gallery.jpg',
-          width: 1852,
-          height: 928,
-          title: 'Media management',
-          caption:
-            'S3-backed gallery for one yacht — 33 images auto-sorted into Aerial, Exterior, Interior and Lifestyle, each re-taggable, feeding the public brochure. The progress bar tracks how complete a listing is.',
-        },
-        {
-          src: '/projects_data/ycs/life-on-deck.jpg',
-          width: 1852,
-          height: 900,
-          title: 'Life on Deck',
-          caption:
-            'Shared moments from each charter, organised per yacht and synced into the brochures — the content side that keeps a listing current once the scraper has done its part.',
-        },
-      ],
-    },
   },
-  {
-    slug: 'blogs-automation-flow',
-    title: 'Blogs Automation Flow',
-    category: 'n8n / OpenAI / REST APIs',
-    tags: ['n8n', 'OpenAI', 'Automation'],
-    year: '2025',
-    client: 'Internal Tooling',
-    duration: '6 weeks',
-    date: 'Feb 2025',
-    accent: '#f687b3',
-    summary:
-      'An end-to-end n8n workflow that ingests blog content from Gmail, generates structured posts with GPT, and publishes them automatically.',
-    overview: [
-      'A content pipeline that starts in an inbox and ends with a published post and a notified stakeholder, with no human step in between.',
-      'The engineering value is in the state machine: every item is tracked through Processing → Processed/Error using label-based Gmail folders, so a re-run never duplicates work and a failure is recoverable rather than silent.',
-    ],
-    challenge:
-      'Blog content arrived by email in inconsistent formats and had to be published reliably without duplicate posts on re-runs.',
-    approach: [
-      {
-        title: 'Ingest and deduplicate',
-        text: 'Gmail-triggered ingestion that deduplicates against a processing log and extracts/sanitizes raw text.',
-      },
-      {
-        title: 'LLM content generation',
-        text: 'OpenAI GPT generates structured blog content from sanitized input, with the output parsed into validated JSON.',
-      },
-      {
-        title: 'API orchestration',
-        text: 'Sequenced REST calls for login, blog creation and manager/invitee lookup, publishing content and notifying stakeholders via Gmail.',
-      },
-      {
-        title: 'State tracking',
-        text: 'Label-based Gmail folders track Processing → Processed/Error to prevent duplicate runs and support failure recovery.',
-      },
-    ],
-    results: [
-      { value: '100%', label: 'Hands-Off Publishing' },
-      { value: '0', label: 'Duplicate Posts' },
-      { value: '3', label: 'Pipeline States' },
-    ],
-    stack: ['n8n', 'Gmail API', 'OpenAI API', 'REST APIs', 'JSON'],
 
-    media: {
-      thumb: { src: '/projects_data/n8n/blog_overall_view.png', width: 1844, height: 916 },
 
-      video: {
-        src: '/projects_data/n8n/walkthrough.mp4',
-        poster: '/projects_data/n8n/walkthrough-poster.jpg',
-        width: 1440,
-        height: 746,
-        length: '2 min',
-        title: 'One run, start to finish',
-        caption:
-          'The workflow executing live — Gmail trigger through extraction, sanitising and GPT generation to publish and notify — then a look inside the code nodes at the JSON going in and coming out. No audio.',
-      },
-      shots: [
-        {
-          src: '/projects_data/n8n/blog_overall_view.png',
-          width: 1844,
-          height: 916,
-          span: 'full',
-          title: 'The whole flow',
-          caption:
-            'Schedule Trigger → Gmail → label as Processing → Text Extraction → Sanitize → Generate Blog Post → Login → Create Blog → Get Manager and Invitee → notify, with every node routing its Error branch into "Add To Blogs (Error)" so a failed item lands somewhere recoverable instead of vanishing.',
-        },
-        {
-          src: '/projects_data/n8n/javascript_text_extraction.png',
-          width: 1831,
-          height: 903,
-          title: 'Text extraction',
-          caption:
-            'The code node that pulls subject, body and binary attachments off each Gmail message and flattens 50 items into one predictable shape — raw message JSON on the left, the extracted schema on the right.',
-        },
-        {
-          src: '/projects_data/n8n/javascript_to_clean.png',
-          width: 1831,
-          height: 903,
-          title: 'Sanitising the body',
-          caption:
-            'Forwarded mail arrives as HTML with encoded entities, so this step strips tags and decodes them before anything reaches the model. Note the split Success / Error branches on the output.',
-        },
-        {
-          src: '/projects_data/n8n/content_of_email.png',
-          width: 1803,
-          height: 885,
-          /* full width so the third half-shot isn't left alone on a row —
-             and the in/out tables here need the room to be readable */
-          span: 'full',
-          title: 'State tracking by Gmail label',
-          caption:
-            'There is no database behind this — the Gmail labels are the state machine. This node stamps each message as Blogs (Processing) via {{ $json.id }}, and later steps move it to Processed or Error, which is what makes a re-run safe.',
-        },
-      ],
-    },
-  },
 ];
 
 export const testimonials = [
@@ -902,7 +904,7 @@ export const testimonials = [
 export const pricing = [
   {
     name: 'Pipeline',
-    price: '$45',
+    price: '$20',
     unit: '/hr',
     featured: false,
     description: 'For focused, well-scoped data engineering work.',
@@ -916,7 +918,7 @@ export const pricing = [
   },
   {
     name: 'Platform',
-    price: '$3,200',
+    price: '$1000',
     unit: '/mo',
     featured: true,
     description: 'Ongoing ownership of your data platform.',
