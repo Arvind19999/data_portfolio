@@ -3,6 +3,19 @@
  * Edit here — the pages read from this file.
  */
 
+/**
+ * Web3Forms relays the contact form to `profile.email`, so the site stays
+ * static — no server, nothing to deploy alongside it.
+ *
+ * Get a key at web3forms.com: you give them the address to deliver to and they
+ * mail the key back, no account. It belongs in client code and is safe there —
+ * it only ever delivers to the address it was issued for, so a stranger who
+ * copies it can only send you mail, which they could do anyway.
+ *
+ * Left empty, the form falls back to opening the visitor's mail client.
+ */
+export const contactFormKey = '64c8bafa-94a0-4d6d-a25c-e941961219d2';
+
 export const profile = {
   name: 'Arbind Sah',
   firstName: 'Arbind',
