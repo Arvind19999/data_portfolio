@@ -181,7 +181,7 @@ ul {
 .arcs::after {
   content: '';
   position: absolute;
-  border: 1px solid rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.015);
   border-radius: 50%;
 }
 
@@ -190,6 +190,13 @@ ul {
   height: 900px;
   top: -420px;
   left: -260px;
+  background: repeating-radial-gradient(
+    circle at center,
+    transparent,
+    transparent 219px,
+    rgba(255, 255, 255, 0.015) 220px,
+    rgba(255, 255, 255, 0.015) 221px
+  );
 }
 
 .arcs::after {
@@ -197,6 +204,13 @@ ul {
   height: 1200px;
   bottom: -700px;
   right: -320px;
+  background: repeating-radial-gradient(
+    circle at center,
+    transparent,
+    transparent 279px,
+    rgba(255, 255, 255, 0.015) 280px,
+    rgba(255, 255, 255, 0.015) 281px
+  );
 }
 
 .section > .container,
@@ -437,12 +451,32 @@ ul {
   font-size: 1rem;
   font-weight: 300;
   color: var(--muted);
+  position: relative;
   transition: color 0.3s var(--ease);
+}
+
+.nav__link::after {
+  content: '';
+  position: absolute;
+  bottom: 18px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #fff;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s var(--ease);
 }
 
 .nav__link:hover,
 .nav__link.is-active {
   color: #fff;
+}
+
+.nav__link:hover::after,
+.nav__link.is-active::after {
+  transform: scaleX(1);
+  transform-origin: left;
 }
 
 .nav__caret {
@@ -483,8 +517,23 @@ ul {
   padding: 10px 26px;
   font-size: 0.93rem;
   color: var(--muted);
+  position: relative;
+  overflow: hidden;
   transition: color 0.25s var(--ease), background 0.25s var(--ease),
     padding-left 0.25s var(--ease);
+}
+
+.dropdown a::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background-color: #fff;
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.25s var(--ease);
 }
 
 .dropdown a:hover,
@@ -492,6 +541,12 @@ ul {
   color: #fff;
   background: rgba(255, 255, 255, 0.05);
   padding-left: 32px;
+}
+
+.dropdown a:hover::before,
+.dropdown a.is-active::before {
+  transform: scaleY(1);
+  transform-origin: top;
 }
 
 .header__cta {
@@ -844,12 +899,17 @@ ul {
 /* stroke-width is in viewBox units, so it scales with the arc (~2px on screen) */
 .hero__orbit-line path {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.15);
-  stroke-width: 0.18;
+  stroke: rgba(255, 255, 255, 0.45);
+  stroke-width: 0.22;
 }
 
 .hero__orbit-line .orbit-inner {
-  stroke: rgba(255, 255, 255, 0.06);
+  stroke: rgba(255, 255, 255, 0.16);
+  stroke-dasharray: 1.1 1.7;
+}
+
+.hero__orbit-line .orbit-innermost {
+  stroke: rgba(255, 255, 255, 0.08);
   stroke-dasharray: 1.1 1.7;
 }
 
@@ -864,16 +924,16 @@ ul {
 
 .orbit-link {
   position: absolute;
-  width: 58px;
-  height: 58px;
+  width: 64px;
+  height: 64px;
   margin: 0;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  background: rgba(34, 34, 43, 0.92);
+  border: 1.5px solid rgba(255, 255, 255, 0.65);
+  background: rgba(26, 26, 33, 0.95);
   backdrop-filter: blur(6px);
   display: grid;
   place-items: center;
-  color: var(--muted);
+  color: #ffffff;
   /* left/top come from Hero.jsx as percentages on the ring */
   transform: translate(-50%, -50%);
   transition: background 0.35s var(--ease), color 0.35s var(--ease),

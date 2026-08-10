@@ -65,6 +65,7 @@ export default function Hero() {
                     links (±42° here, links at ±34°). */}
                 <path d="M87.16 16.54 A50 50 0 0 1 87.16 83.46" />
                 <path className="orbit-inner" d="M77.43 19.53 A41 41 0 0 1 77.43 80.47" />
+                <path className="orbit-innermost" d="M67.7 22.5 A32 32 0 0 1 67.7 77.5" />
               </svg>
             </div>
 
