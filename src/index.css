@@ -177,8 +177,7 @@ ul {
   z-index: 0;
 }
 
-.arcs::before,
-.arcs::after {
+.arcs::before {
   content: '';
   position: absolute;
   border: 1px solid rgba(255, 255, 255, 0.045);
@@ -196,20 +195,6 @@ ul {
     transparent 65px,
     rgba(255, 255, 255, 0.045) 66px,
     rgba(255, 255, 255, 0.045) 67px
-  );
-}
-
-.arcs::after {
-  width: 500px;
-  height: 500px;
-  bottom: -250px;
-  right: -250px;
-  background: repeating-radial-gradient(
-    circle at center,
-    transparent,
-    transparent 79px,
-    rgba(255, 255, 255, 0.045) 80px,
-    rgba(255, 255, 255, 0.045) 81px
   );
 }
 
