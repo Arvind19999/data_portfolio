@@ -6,20 +6,28 @@ import { socialIcon } from '../components/socialIcon';
 import Reveal from '../components/Reveal';
 import SectionHead from '../components/SectionHead';
 import { usePageMeta } from '../hooks/usePageMeta';
-import { profile, socials } from '../data/site';
+import { contactFormKey, profile, socials } from '../data/site';
 
 const EMPTY = { name: '', email: '', phone: '', subject: '', message: '' };
+const ENDPOINT = 'https://api.web3forms.com/submit';
 
 export default function Contact() {
   usePageMeta('Contact', `Get in touch with ${profile.name} about data engineering work.`);
 
   const [values, setValues] = useState(EMPTY);
   const [errors, setErrors] = useState({});
-  const [sent, setSent] = useState(false);
+  // idle | sending | ok | error | mail  — `mail` is the no-key fallback below.
+  const [status, setStatus] = useState('idle');
+  // Hidden from real visitors, but bots fill in every input they find. Web3Forms
+  // drops the submission when this comes back with anything in it.
+  const [botcheck, setBotcheck] = useState('');
 
   const set = (key) => (e) => {
     setValues({ ...values, [key]: e.target.value });
     if (errors[key]) setErrors({ ...errors, [key]: undefined });
+    // Editing after a verdict means they are having another go — clear it, so a
+    // stale success or failure notice is not left sitting under a fresh message.
+    if (status !== 'idle' && status !== 'sending') setStatus('idle');
   };
 
   const validate = () => {
@@ -31,14 +39,10 @@ export default function Contact() {
     return next;
   };
 
-  // No backend is wired up. This opens the visitor's mail client with the
-  // message pre-filled — swap for a form service or API route when you have one.
-  const submit = (e) => {
-    e.preventDefault();
-    const found = validate();
-    setErrors(found);
-    if (Object.keys(found).length > 0) return;
-
+  // The escape hatch: a mail client pre-filled with everything they typed. Used
+  // when no key is configured, and offered as a link if the POST fails, so a
+  // message someone took the trouble to write is never simply lost.
+  const mailtoHref = () => {
     const body = [
       `Name: ${values.name}`,
       `Email: ${values.email}`,
@@ -49,12 +53,49 @@ export default function Contact() {
       .filter(Boolean)
       .join('\n');
 
-    window.location.href = `mailto:${profile.email}?subject=${encodeURIComponent(
+    return `mailto:${profile.email}?subject=${encodeURIComponent(
       values.subject
     )}&body=${encodeURIComponent(body)}`;
+  };
 
-    setSent(true);
-    setValues(EMPTY);
+  const submit = async (e) => {
+    e.preventDefault();
+    const found = validate();
+    setErrors(found);
+    if (Object.keys(found).length > 0) return;
+
+    if (!contactFormKey) {
+      window.location.href = mailtoHref();
+      setStatus('mail');
+      setValues(EMPTY);
+      return;
+    }
+
+    setStatus('sending');
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: contactFormKey,
+          // `subject` titles the mail, `from_name` signs it and `email` becomes
+          // the reply-to — so replying in the inbox reaches the sender directly.
+          subject: values.subject,
+          from_name: values.name,
+          name: values.name,
+          email: values.email,
+          phone: values.phone || 'Not given',
+          message: values.message,
+          botcheck,
+        }),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message || 'The form service refused it.');
+      setStatus('ok');
+      setValues(EMPTY);
+    } catch {
+      setStatus('error');
+    }
   };
 
   const details = [
@@ -199,16 +240,45 @@ export default function Contact() {
                     {errors.message && <span className="field__error">{errors.message}</span>}
                   </div>
 
-                  {sent && (
+                  {/* Off-screen rather than display:none — bots skip what is
+                      plainly hidden, but happily fill a field they can "see". */}
+                  <input
+                    className="form__honey"
+                    type="text"
+                    name="botcheck"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    value={botcheck}
+                    onChange={(e) => setBotcheck(e.target.value)}
+                  />
+
+                  {status === 'ok' && (
+                    <div className="form__status form__status--ok" role="status">
+                      Thank you — your message is on its way. I read everything myself and will
+                      reply within a day or two.
+                    </div>
+                  )}
+
+                  {status === 'mail' && (
                     <div className="form__status form__status--ok" role="status">
                       Your mail client should have opened with the message ready to send. If it
                       did not, email me directly at {profile.email}.
                     </div>
                   )}
 
+                  {status === 'error' && (
+                    <div className="form__status form__status--bad" role="alert">
+                      That did not go through — the form service may be down, or something is
+                      blocking the request.{' '}
+                      <a href={mailtoHref()}>Send it as an email instead</a>, or write to{' '}
+                      {profile.email}. Nothing you typed has been lost.
+                    </div>
+                  )}
+
                   <div className="field--full">
-                    <button type="submit" className="btn">
-                      <span>Send Message</span>
+                    <button type="submit" className="btn" disabled={status === 'sending'}>
+                      <span>{status === 'sending' ? 'Sending…' : 'Send Message'}</span>
                       <DoubleChevron className="btn__icon" />
                     </button>
                   </div>

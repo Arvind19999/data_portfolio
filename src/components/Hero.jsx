@@ -1,9 +1,7 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { profile, socials } from '../data/site';
-import { Download, Play } from './Icons';
+import { Download, DoubleChevron } from './Icons';
 import { socialIcon } from './socialIcon';
-import VideoModal from './VideoModal';
 
 /**
  * Where each social link sits on the arc, in degrees (0° = due right, up = -).
@@ -12,8 +10,6 @@ import VideoModal from './VideoModal';
 const ORBIT_ANGLES = [-34, -17, 0, 17, 34];
 
 export default function Hero() {
-  const [video, setVideo] = useState(false);
-
   return (
     <section className="hero">
       <div className="arcs" />
@@ -48,12 +44,12 @@ export default function Hero() {
                 <Download className="btn__icon" />
               </a>
 
-              <button type="button" className="play" onClick={() => setVideo(true)}>
+              <a href="#projects" className="play">
                 <span className="play__ring">
-                  <Play />
+                  <DoubleChevron style={{ transform: 'rotate(90deg)' }} />
                 </span>
-                <span>Watch Video</span>
-              </button>
+                <span>Explore Projects</span>
+              </a>
             </div>
           </div>
 
@@ -67,8 +63,9 @@ export default function Hero() {
                     curve stays beside the portrait instead of sweeping back
                     across the headline. Endpoints sit just past the outermost
                     links (±42° here, links at ±34°). */}
-                <path d="M87.16 16.54 A50 50 0 0 1 87.16 83.46" />
-                <path className="orbit-inner" d="M77.43 19.53 A41 41 0 0 1 77.43 80.47" />
+                <path d="M62.94 1.7 A50 50 0 0 1 62.94 98.3" />
+                <path className="orbit-inner" d="M60.87 9.43 A42 42 0 0 1 60.87 90.57" />
+                <path className="orbit-innermost" d="M58.8 17.16 A34 34 0 0 1 58.8 82.84" />
               </svg>
             </div>
 
@@ -112,8 +109,6 @@ export default function Hero() {
       <Link to="/about" className="hero__scroll">
         Scroll
       </Link>
-
-      {video && <VideoModal url={profile.videoUrl} onClose={() => setVideo(false)} />}
     </section>
   );
 }
