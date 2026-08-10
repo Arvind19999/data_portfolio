@@ -2486,6 +2486,15 @@ ul {
   justify-content: center;
 }
 
+.newsletter__actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  margin: 42px auto 0;
+  flex-wrap: wrap;
+}
+
 .newsletter__input {
   flex: 1;
   min-width: 260px;
