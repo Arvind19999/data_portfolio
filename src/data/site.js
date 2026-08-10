@@ -873,8 +873,6 @@ export const projects = [
       'Docker',
     ],
   },
-
-
 ];
 
 export const testimonials = [
