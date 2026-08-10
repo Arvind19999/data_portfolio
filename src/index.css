@@ -181,35 +181,35 @@ ul {
 .arcs::after {
   content: '';
   position: absolute;
-  border: 1px solid rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.045);
   border-radius: 50%;
 }
 
 .arcs::before {
-  width: 900px;
-  height: 900px;
-  top: -420px;
-  left: -260px;
+  width: 400px;
+  height: 400px;
+  top: -200px;
+  left: -200px;
   background: repeating-radial-gradient(
     circle at center,
     transparent,
-    transparent 219px,
-    rgba(255, 255, 255, 0.015) 220px,
-    rgba(255, 255, 255, 0.015) 221px
+    transparent 65px,
+    rgba(255, 255, 255, 0.045) 66px,
+    rgba(255, 255, 255, 0.045) 67px
   );
 }
 
 .arcs::after {
-  width: 1200px;
-  height: 1200px;
-  bottom: -700px;
-  right: -320px;
+  width: 500px;
+  height: 500px;
+  bottom: -250px;
+  right: -250px;
   background: repeating-radial-gradient(
     circle at center,
     transparent,
-    transparent 279px,
-    rgba(255, 255, 255, 0.015) 280px,
-    rgba(255, 255, 255, 0.015) 281px
+    transparent 79px,
+    rgba(255, 255, 255, 0.045) 80px,
+    rgba(255, 255, 255, 0.045) 81px
   );
 }
 
@@ -899,18 +899,18 @@ ul {
 /* stroke-width is in viewBox units, so it scales with the arc (~2px on screen) */
 .hero__orbit-line path {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.45);
-  stroke-width: 0.22;
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 0.18;
 }
 
 .hero__orbit-line .orbit-inner {
-  stroke: rgba(255, 255, 255, 0.16);
-  stroke-dasharray: 1.1 1.7;
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-dasharray: 3 4;
 }
 
 .hero__orbit-line .orbit-innermost {
-  stroke: rgba(255, 255, 255, 0.08);
-  stroke-dasharray: 1.1 1.7;
+  stroke: rgba(255, 255, 255, 0.05);
+  stroke-dasharray: 3 4;
 }
 
 .hero__socials {
