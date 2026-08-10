@@ -22,7 +22,7 @@
   --font-display: 'Playfair Display', 'Georgia', 'Times New Roman', serif;
   --font-body: 'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  --container: 1250px;
+  --container: 1500px;
   --gutter: 24px;
 
   --r-sm: 8px;
@@ -975,13 +975,21 @@ ul {
   border-left: 1px solid var(--line);
 }
 
+.svc-grid .reveal {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .svc {
   padding: 46px 38px 44px;
   border-right: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   position: relative;
   transition: background 0.4s var(--ease);
-  display: block;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .svc::before {
@@ -1024,6 +1032,10 @@ ul {
 .svc__text {
   font-size: 0.92rem;
   margin-bottom: 24px;
+}
+
+.svc__points {
+  margin-top: auto;
 }
 
 .svc__points li {
@@ -2901,7 +2913,7 @@ ul {
 /* Between the mobile breakpoint and a wide desktop the container nearly fills
    the viewport, leaving no room for the ring to sit outside the portrait. Pad
    the hero's right edge so the 3 o'clock link stays fully on screen. */
-@media (min-width: 1101px) and (max-width: 1500px) {
+@media (min-width: 1101px) and (max-width: 1750px) {
   .hero__figure {
     padding-right: 108px;
   }

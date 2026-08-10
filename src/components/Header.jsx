@@ -21,6 +21,7 @@ export default function Header() {
   useEffect(() => {
     setDrawer(false);
     setOpenSub(null);
+    document.activeElement?.blur();
   }, [location.pathname]);
 
   // Lock body scroll while the drawer is open, and allow Escape to close it.
@@ -54,6 +55,7 @@ export default function Header() {
                   to={item.to}
                   end={item.to === '/'}
                   className={({ isActive }) => `nav__link ${isActive ? 'is-active' : ''}`}
+                  onClick={(e) => e.currentTarget.blur()}
                 >
                   {item.label}
                   {item.children && <ChevronDown className="nav__caret" />}
@@ -66,6 +68,7 @@ export default function Header() {
                         key={child.label}
                         to={child.to}
                         className={({ isActive }) => (isActive ? 'is-active' : '')}
+                        onClick={(e) => e.currentTarget.blur()}
                       >
                         {child.label}
                       </NavLink>
