@@ -1,9 +1,7 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { profile, socials } from '../data/site';
-import { Download, Play } from './Icons';
+import { Download, DoubleChevron } from './Icons';
 import { socialIcon } from './socialIcon';
-import VideoModal from './VideoModal';
 
 /**
  * Where each social link sits on the arc, in degrees (0° = due right, up = -).
@@ -12,8 +10,6 @@ import VideoModal from './VideoModal';
 const ORBIT_ANGLES = [-34, -17, 0, 17, 34];
 
 export default function Hero() {
-  const [video, setVideo] = useState(false);
-
   return (
     <section className="hero">
       <div className="arcs" />
@@ -48,12 +44,12 @@ export default function Hero() {
                 <Download className="btn__icon" />
               </a>
 
-              <button type="button" className="play" onClick={() => setVideo(true)}>
+              <a href="#projects" className="play">
                 <span className="play__ring">
-                  <Play />
+                  <DoubleChevron style={{ transform: 'rotate(90deg)' }} />
                 </span>
-                <span>Watch Video</span>
-              </button>
+                <span>Explore Projects</span>
+              </a>
             </div>
           </div>
 
@@ -112,8 +108,6 @@ export default function Hero() {
       <Link to="/about" className="hero__scroll">
         Scroll
       </Link>
-
-      {video && <VideoModal url={profile.videoUrl} onClose={() => setVideo(false)} />}
     </section>
   );
 }

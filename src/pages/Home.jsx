@@ -77,7 +77,7 @@ export default function Home() {
       </section>
 
       {/* Projects ------------------------------------------------------- */}
-      <section className="section section--alt">
+      <section id="projects" className="section section--alt">
         <div className="arcs" />
         <div className="container">
           <SectionHead
