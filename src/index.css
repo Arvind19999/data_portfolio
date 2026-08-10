@@ -882,10 +882,10 @@ ul {
 .hero__orbit,
 .hero__socials {
   position: absolute;
-  width: min(1000px, 175%);
+  width: min(800px, 130%);
   aspect-ratio: 1;
   top: 50%;
-  right: 20px;
+  right: 30px;
   transform: translateY(-50%);
 }
 
@@ -905,12 +905,10 @@ ul {
 
 .hero__orbit-line .orbit-inner {
   stroke: rgba(255, 255, 255, 0.08);
-  stroke-dasharray: 3 4;
 }
 
 .hero__orbit-line .orbit-innermost {
   stroke: rgba(255, 255, 255, 0.05);
-  stroke-dasharray: 3 4;
 }
 
 .hero__socials {

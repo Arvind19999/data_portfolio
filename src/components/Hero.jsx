@@ -63,9 +63,9 @@ export default function Hero() {
                     curve stays beside the portrait instead of sweeping back
                     across the headline. Endpoints sit just past the outermost
                     links (±42° here, links at ±34°). */}
-                <path d="M87.16 16.54 A50 50 0 0 1 87.16 83.46" />
-                <path className="orbit-inner" d="M77.43 19.53 A41 41 0 0 1 77.43 80.47" />
-                <path className="orbit-innermost" d="M67.7 22.5 A32 32 0 0 1 67.7 77.5" />
+                <path d="M71.1 4.7 A50 50 0 0 1 71.1 95.3" />
+                <path className="orbit-inner" d="M67.7 11.9 A42 42 0 0 1 67.7 88.1" />
+                <path className="orbit-innermost" d="M64.3 19.2 A34 34 0 0 1 64.3 80.8" />
               </svg>
             </div>
 
